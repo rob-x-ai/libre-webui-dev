@@ -46,11 +46,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       textarea.style.height = 'auto';
       textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
     }
-  }, [message]);
-
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-      <form onSubmit={handleSubmit} className="flex gap-3">
+  }, [message]);  return (
+    <div className="border-t border-gray-100 dark:border-dark-200 bg-white dark:bg-dark-100 p-6">
+      <form onSubmit={handleSubmit} className="flex gap-4">
         <div className="flex-1">
           <Textarea
             ref={textareaRef}
@@ -60,21 +58,22 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             placeholder="Type your message... (Enter to send, Shift+Enter for new line)"
             disabled={disabled}
             className={cn(
-              'min-h-[44px] max-h-[200px] resize-none',
-              'scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'
+              'min-h-[52px] max-h-[200px] resize-none bg-gray-50 dark:bg-dark-50 border-gray-200 dark:border-dark-300',
+              'scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-400',
+              'focus:bg-white dark:focus:bg-dark-50'
             )}
             rows={1}
           />
         </div>
-        
-        <div className="flex flex-col gap-2">
+
+        <div className="flex flex-col justify-end">
           {isGenerating ? (
             <Button
               type="button"
               variant="outline"
               size="md"
               onClick={handleStopGeneration}
-              className="h-11 w-11 p-0"
+              className="h-[52px] w-[52px] p-0 border-gray-200 dark:border-dark-300 hover:border-gray-300 dark:hover:border-dark-400"
               title="Stop generation"
             >
               <Square className="h-4 w-4" />
@@ -85,7 +84,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               variant="primary"
               size="md"
               disabled={!message.trim() || disabled}
-              className="h-11 w-11 p-0"
+              className="h-[52px] w-[52px] p-0 shadow-md hover:shadow-lg disabled:shadow-sm"
               title="Send message"
             >
               <Send className="h-4 w-4" />
@@ -94,7 +93,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </form>
       
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+      <div className="mt-3 text-xs text-gray-500 dark:text-dark-600 text-center">
         Libre WebUI • Press Enter to send, Shift+Enter for new line
       </div>
     </div>

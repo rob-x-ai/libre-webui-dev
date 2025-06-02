@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Menu, Settings, Bot } from 'lucide-react';
+import { Menu, Settings } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SettingsModal } from '@/components/SettingsModal';
+import { Logo } from '@/components/Logo';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
 import { cn } from '@/utils';
@@ -35,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header
         className={cn(
-          'flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800',
+          'flex items-center justify-between p-4 border-b border-gray-100 dark:border-dark-200 bg-white/80 dark:bg-dark-50/80 backdrop-blur-sm',
           className
         )}
       >
@@ -45,21 +46,21 @@ export const Header: React.FC<HeaderProps> = ({
             variant="ghost"
             size="sm"
             onClick={onToggleSidebar}
-            className="h-9 w-9 p-0"
+            className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
             title={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
           >
             <Menu className="h-4 w-4" />
           </Button>
 
-          <div className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-primary-600 dark:text-primary-400" />
-            <div className="flex flex-col gap-1">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <div className="flex items-center gap-3">
+            <Logo size="sm" />
+            <div className="flex flex-col">
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight">
                 {currentSession?.title || 'Libre WebUI'}
               </h1>
               {currentSession && models.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Model:</span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs text-gray-500 dark:text-dark-500">Model:</span>
                   <Select
                     value={currentSession.model}
                     onChange={handleModelChange}
@@ -67,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
                       value: model.name, 
                       label: model.name 
                     }))}
-                    className="text-xs min-w-0 py-1 px-2 h-6"
+                    className="text-xs min-w-0 py-1 px-2 h-6 border-0 bg-gray-50 dark:bg-dark-200 rounded-lg"
                   />
                 </div>
               )}
@@ -81,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 w-9 p-0"
+            className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
             title="Settings"
             onClick={() => setSettingsOpen(true)}
           >

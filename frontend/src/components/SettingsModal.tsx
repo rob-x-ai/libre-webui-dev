@@ -36,23 +36,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-50"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-200"
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md mx-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg mx-4">
+        <div className="bg-white dark:bg-dark-50 rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-200 animate-scale-in">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-dark-200">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-800">
               Settings
             </h2>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
               title="Close"
             >
               <X className="h-4 w-4" />
@@ -60,27 +60,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Content */}
-          <div className="p-4 space-y-6">
+          <div className="p-6 space-y-8 max-h-[60vh] overflow-y-auto scrollbar-thin">
             {/* Theme Settings */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Theme
+              <label className="block text-sm font-semibold text-gray-900 dark:text-dark-800 mb-3">
+                Appearance
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   variant={theme.mode === 'light' ? 'primary' : 'outline'}
-                  size="sm"
+                  size="md"
                   onClick={() => handleThemeChange('light')}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 h-12"
                 >
                   <Sun className="h-4 w-4" />
                   Light
                 </Button>
                 <Button
                   variant={theme.mode === 'dark' ? 'primary' : 'outline'}
-                  size="sm"
+                  size="md"
                   onClick={() => handleThemeChange('dark')}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 h-12"
                 >
                   <Moon className="h-4 w-4" />
                   Dark
@@ -90,7 +90,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             {/* Default Model Settings */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-dark-800 mb-3">
                 Default Model
               </label>
               <Select
@@ -104,7 +104,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   }))
                 ]}
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 dark:text-dark-600 mt-2">
                 This model will be used for new conversations
               </p>
             </div>
@@ -112,14 +112,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {/* Model Information */}
             {selectedModel && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-700 mb-2">
                   Current Model Info
                 </label>
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-sm">
+                <div className="bg-gray-50 dark:bg-dark-200 rounded-lg p-3 text-sm">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-gray-500 dark:text-gray-400">Name:</span>
-                      <span className="ml-1 text-gray-900 dark:text-gray-100">
+                      <span className="text-gray-500 dark:text-dark-600">Name:</span>
+                      <span className="ml-1 text-gray-900 dark:text-dark-800">
                         {selectedModel}
                       </span>
                     </div>
@@ -129,20 +129,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         return (
                           <>
                             <div>
-                              <span className="text-gray-500 dark:text-gray-400">Size:</span>
-                              <span className="ml-1 text-gray-900 dark:text-gray-100">
+                              <span className="text-gray-500 dark:text-dark-600">Size:</span>
+                              <span className="ml-1 text-gray-900 dark:text-dark-800">
                                 {model.details.parameter_size}
                               </span>
                             </div>
                             <div>
-                              <span className="text-gray-500 dark:text-gray-400">Family:</span>
-                              <span className="ml-1 text-gray-900 dark:text-gray-100">
+                              <span className="text-gray-500 dark:text-dark-600">Family:</span>
+                              <span className="ml-1 text-gray-900 dark:text-dark-800">
                                 {model.details.family}
                               </span>
                             </div>
                             <div>
-                              <span className="text-gray-500 dark:text-gray-400">Format:</span>
-                              <span className="ml-1 text-gray-900 dark:text-gray-100">
+                              <span className="text-gray-500 dark:text-dark-600">Format:</span>
+                              <span className="ml-1 text-gray-900 dark:text-dark-800">
                                 {model.details.format}
                               </span>
                             </div>
@@ -158,29 +158,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             {/* Data Management */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-dark-800 mb-3">
                 Data Management
               </label>
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+              <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
-                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-error-600 dark:text-error-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-medium text-red-800 dark:text-red-300 mb-1">
+                    <h4 className="text-sm font-medium text-error-800 dark:text-error-200 mb-2">
                       Clear All Chat History
                     </h4>
-                    <p className="text-xs text-red-700 dark:text-red-400 mb-3">
+                    <p className="text-xs text-error-700 dark:text-error-300 mb-4">
                       This will permanently delete all your chat sessions and messages. This action cannot be undone.
                     </p>
                     <Button
-                      variant="outline"
+                      variant="danger"
                       size="sm"
                       onClick={handleClearAllHistory}
                       disabled={loading}
-                      className="text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       {loading ? 'Clearing...' : 'Clear All History'}
                     </Button>
@@ -191,8 +190,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex justify-end gap-3 p-6 border-t border-gray-100 dark:border-dark-200">
+            <Button variant="outline" onClick={onClose} size="md">
               Close
             </Button>
           </div>

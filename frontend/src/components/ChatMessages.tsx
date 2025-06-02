@@ -28,12 +28,12 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
 
   if (messages.length === 0 && !isStreaming) {
     return (
-      <div className={cn('flex-1 flex items-center justify-center', className)}>
-        <div className="text-center text-gray-500 dark:text-gray-400">
-          <div className="text-6xl mb-4">💬</div>
-          <h3 className="text-lg font-medium mb-2">Start a conversation</h3>
-          <p className="text-sm">
-            Send a message to begin chatting with your AI assistant
+      <div className={cn('flex-1 flex items-center justify-center p-8', className)}>
+        <div className="text-center text-gray-500 dark:text-dark-600 max-w-md">
+          <div className="text-7xl mb-6 opacity-60">💬</div>
+          <h3 className="text-xl font-semibold mb-3 text-gray-700 dark:text-dark-700">Start a conversation</h3>
+          <p className="text-sm leading-relaxed">
+            Send a message to begin chatting with your AI assistant. Ask questions, get help with code, or have a natural conversation.
           </p>
         </div>
       </div>
@@ -44,17 +44,21 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
     <div
       className={cn(
         'flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600',
+        'scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500',
         className
       )}
     >
-      {messages.map((message) => (
-        <ChatMessage
-          key={message.id}
-          message={message}
-          isStreaming={isStreaming && message === messages[messages.length - 1]}
-        />
-      ))}
-      <div ref={messagesEndRef} />
+      <div className="max-w-4xl mx-auto">
+        {messages.map((message, index) => (
+          <ChatMessage
+            key={message.id}
+            message={message}
+            isStreaming={isStreaming && message === messages[messages.length - 1]}
+            className={index === 0 ? 'mt-6' : ''}
+          />
+        ))}
+        <div ref={messagesEndRef} className="h-6" />
+      </div>
     </div>
   );
 };

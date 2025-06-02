@@ -24,7 +24,7 @@ export const Select: React.FC<SelectProps> = ({
       {label && (
         <label
           htmlFor={selectId}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-dark-700"
         >
           {label}
         </label>
@@ -32,11 +32,11 @@ export const Select: React.FC<SelectProps> = ({
       <select
         id={selectId}
         className={cn(
-          'block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm transition-colors',
-          'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none',
-          'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
+          'block w-full rounded-xl border border-gray-200 px-4 py-3 text-sm shadow-sm transition-all duration-200 bg-white',
+          'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none focus:shadow-md',
+          'dark:border-dark-300 dark:bg-dark-100 dark:text-dark-800',
           'dark:focus:border-primary-400 dark:focus:ring-primary-400/20',
-          error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
+          error && 'border-error-500 focus:border-error-500 focus:ring-error-500/20',
           className
         )}
         {...props}
@@ -48,10 +48,10 @@ export const Select: React.FC<SelectProps> = ({
         ))}
       </select>
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <p className="text-sm text-error-600 dark:text-error-400">{error}</p>
       )}
       {helper && !error && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{helper}</p>
+        <p className="text-sm text-gray-500 dark:text-dark-600">{helper}</p>
       )}
     </div>
   );

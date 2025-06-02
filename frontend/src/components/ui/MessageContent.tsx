@@ -29,7 +29,7 @@ export const MessageContent: React.FC<MessageContentProps> = ({
   };
 
   return (
-    <div className={cn('prose prose-sm max-w-none dark:prose-invert', className)}>
+    <div className={cn('prose prose-sm max-w-none dark:prose-invert prose-gray', className)}>
       <ReactMarkdown
         components={{
           code({ node, inline, className, children, ...props }: any) {
@@ -38,31 +38,39 @@ export const MessageContent: React.FC<MessageContentProps> = ({
             
             if (!inline && match) {
               return (
-                <div className="relative group">
-                  <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-t-lg border-b border-gray-200 dark:border-gray-700">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                <div className="relative group my-4 overflow-hidden rounded-xl border border-gray-200 dark:border-dark-300 shadow-sm">
+                  <div className="flex items-center justify-between bg-gray-50 dark:bg-dark-100 px-4 py-3 border-b border-gray-200 dark:border-dark-300">
+                    <span className="text-xs font-semibold text-gray-700 dark:text-dark-700 uppercase tracking-wide">
                       {match[1]}
                     </span>
                     <button
                       onClick={() => copyToClipboard(codeString)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                      className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
                       title="Copy code"
                     >
                       {copiedCode === codeString ? (
-                        <Check className="h-4 w-4 text-green-600" />
+                        <Check className="h-4 w-4 text-success-600 dark:text-success-400" />
                       ) : (
-                        <Copy className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                        <Copy className="h-4 w-4 text-gray-500 dark:text-dark-600" />
                       )}
                     </button>
                   </div>
-                  <SyntaxHighlighter
-                    style={theme.mode === 'dark' ? oneDark as any : oneLight as any}
-                    language={match[1]}
-                    PreTag="div"
-                    className="!mt-0 !rounded-t-none"
-                  >
-                    {codeString}
-                  </SyntaxHighlighter>
+                  <div className="overflow-x-auto">
+                    <SyntaxHighlighter
+                      style={theme.mode === 'dark' ? oneDark as any : oneLight as any}
+                      language={match[1]}
+                      PreTag="div"
+                      className="!m-0 !rounded-none !border-none"
+                      customStyle={{
+                        padding: '1rem',
+                        background: 'transparent',
+                        fontSize: '0.875rem',
+                        lineHeight: '1.5',
+                      }}
+                    >
+                      {codeString}
+                    </SyntaxHighlighter>
+                  </div>
                 </div>
               );
             }
@@ -70,7 +78,8 @@ export const MessageContent: React.FC<MessageContentProps> = ({
             return (
               <code
                 className={cn(
-                  'px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-mono text-sm',
+                  'px-2 py-1 rounded-md bg-gray-100 dark:bg-dark-200 text-gray-800 dark:text-dark-800',
+                  'font-mono text-sm border border-gray-200 dark:border-dark-300',
                   className
                 )}
                 {...props}
@@ -83,21 +92,21 @@ export const MessageContent: React.FC<MessageContentProps> = ({
             return <pre {...props}>{children}</pre>;
           },
           p({ children, ...props }) {
-            return <p className="mb-3 last:mb-0" {...props}>{children}</p>;
+            return <p className="mb-4 last:mb-0 leading-relaxed" {...props}>{children}</p>;
           },
           ul({ children, ...props }) {
-            return <ul className="list-disc list-inside mb-3 space-y-1" {...props}>{children}</ul>;
+            return <ul className="list-disc list-inside mb-4 space-y-2 pl-4" {...props}>{children}</ul>;
           },
           ol({ children, ...props }) {
-            return <ol className="list-decimal list-inside mb-3 space-y-1" {...props}>{children}</ol>;
+            return <ol className="list-decimal list-inside mb-4 space-y-2 pl-4" {...props}>{children}</ol>;
           },
           li({ children, ...props }) {
-            return <li className="text-gray-700 dark:text-gray-300" {...props}>{children}</li>;
+            return <li className="text-gray-700 dark:text-dark-700 leading-relaxed" {...props}>{children}</li>;
           },
           blockquote({ children, ...props }) {
             return (
               <blockquote
-                className="border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 mb-3"
+                className="border-l-4 border-primary-400 dark:border-primary-500 bg-primary-25 dark:bg-primary-950/30 pl-4 py-3 my-4 rounded-r-lg italic text-gray-700 dark:text-dark-700"
                 {...props}
               >
                 {children}
@@ -105,13 +114,13 @@ export const MessageContent: React.FC<MessageContentProps> = ({
             );
           },
           h1({ children, ...props }) {
-            return <h1 className="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100" {...props}>{children}</h1>;
+            return <h1 className="text-2xl font-bold mb-4 mt-6 first:mt-0 text-gray-900 dark:text-dark-800 border-b border-gray-200 dark:border-dark-300 pb-2" {...props}>{children}</h1>;
           },
           h2({ children, ...props }) {
-            return <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100" {...props}>{children}</h2>;
+            return <h2 className="text-xl font-semibold mb-3 mt-6 first:mt-0 text-gray-900 dark:text-dark-800" {...props}>{children}</h2>;
           },
           h3({ children, ...props }) {
-            return <h3 className="text-base font-medium mb-2 text-gray-900 dark:text-gray-100" {...props}>{children}</h3>;
+            return <h3 className="text-lg font-medium mb-3 mt-4 first:mt-0 text-gray-900 dark:text-dark-800" {...props}>{children}</h3>;
           },
         }}
       >
