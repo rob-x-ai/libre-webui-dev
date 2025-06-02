@@ -1,0 +1,318 @@
+import { create } from 'zustand';
+import { ChatSession, ChatMessage, OllamaModel } from '@/types';
+import { chatApi, ollamaApi } from '@/utils/api';
+import { generateId } from '@/utils';
+import toast from 'react-hot-toast';
+
+interface ChatState {
+  // Sessions
+  sessions: ChatSession[];
+  currentSession: ChatSession | null;
+  setCurrentSession: (session: ChatSession | null) => void;
+  createSession: (model: string, title?: string) => Promise<void>;
+  loadSessions: () => Promise<void>;
+  deleteSession: (sessionId: string) => Promise<void>;
+  clearAllSessions: () => Promise<void>;
+  updateSessionTitle: (sessionId: string, title: string) => Promise<void>;
+
+  // Messages
+  addMessage: (sessionId: string, message: Omit<ChatMessage, 'id' | 'timestamp'> & { id?: string }) => void;
+  updateMessage: (sessionId: string, messageId: string, content: string) => void;
+
+  // Models
+  models: OllamaModel[];
+  loadModels: () => Promise<void>;
+  selectedModel: string;
+  setSelectedModel: (model: string) => void;
+  updateCurrentSessionModel: (model: string) => Promise<void>;
+
+  // UI state
+  loading: boolean;
+  error: string | null;
+  setError: (error: string | null) => void;
+}
+
+export const useChatStore = create<ChatState>((set, get) => ({
+  // Sessions
+  sessions: [],
+  currentSession: null,
+  setCurrentSession: (session) => {
+    console.log('Store: setCurrentSession called', { 
+      newSessionId: session?.id, 
+      messagesCount: session?.messages.length 
+    });
+    set({ currentSession: session });
+  },
+
+  createSession: async (model: string, title?: string) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await chatApi.createSession(model, title);
+      
+      if (response.success && response.data) {
+        const newSession = response.data;
+        set((state) => ({
+          sessions: [newSession, ...state.sessions],
+          currentSession: newSession,
+          loading: false,
+        }));
+        toast.success('New chat created');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || 'Failed to create session';
+      set({ error: errorMessage, loading: false });
+      toast.error(errorMessage);
+    }
+  },
+
+  loadSessions: async () => {
+    try {
+      set({ loading: true, error: null });
+      const response = await chatApi.getSessions();
+      
+      if (response.success && response.data) {
+        set({ sessions: response.data, loading: false });
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || 'Failed to load sessions';
+      set({ error: errorMessage, loading: false });
+      console.error('Failed to load sessions:', error);
+    }
+  },
+
+  deleteSession: async (sessionId: string) => {
+    try {
+      console.log('Store: deleteSession called with:', sessionId);
+      const response = await chatApi.deleteSession(sessionId);
+      console.log('Store: deleteSession API response:', response);
+      
+      if (response.success) {
+        set((state) => {
+          const updatedSessions = state.sessions.filter(s => s.id !== sessionId);
+          const newCurrentSession = state.currentSession?.id === sessionId 
+            ? (updatedSessions[0] || null) 
+            : state.currentSession;
+          
+          console.log('Store: Updating state, sessions count:', updatedSessions.length);
+          
+          return {
+            sessions: updatedSessions,
+            currentSession: newCurrentSession,
+          };
+        });
+        toast.success('Chat deleted');
+      } else {
+        console.error('Store: deleteSession failed:', response);
+        toast.error('Failed to delete chat');
+      }
+    } catch (error: any) {
+      console.error('Store: deleteSession error:', error);
+      const errorMessage = error.response?.data?.error || 'Failed to delete session';
+      toast.error(errorMessage);
+    }
+  },
+
+  clearAllSessions: async () => {
+    try {
+      set({ loading: true, error: null });
+      const response = await chatApi.clearAllSessions();
+      
+      if (response.success) {
+        set({ 
+          sessions: [], 
+          currentSession: null,
+          loading: false 
+        });
+        toast.success('All chat history cleared');
+      } else {
+        console.error('Store: clearAllSessions failed:', response);
+        toast.error('Failed to clear chat history');
+        set({ loading: false });
+      }
+    } catch (error: any) {
+      console.error('Store: clearAllSessions error:', error);
+      const errorMessage = error.response?.data?.error || 'Failed to clear chat history';
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
+
+  updateSessionTitle: async (sessionId: string, title: string) => {
+    try {
+      const response = await chatApi.updateSession(sessionId, { title });
+      
+      if (response.success && response.data) {
+        set((state) => ({
+          sessions: state.sessions.map(s => 
+            s.id === sessionId ? response.data! : s
+          ),
+          currentSession: state.currentSession?.id === sessionId 
+            ? response.data! 
+            : state.currentSession,
+        }));
+        toast.success('Chat title updated');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || 'Failed to update session';
+      toast.error(errorMessage);
+    }
+  },
+
+  // Messages
+  addMessage: (sessionId: string, message: Omit<ChatMessage, 'id' | 'timestamp'> & { id?: string }) => {
+    const newMessage: ChatMessage = {
+      ...message,
+      id: message.id || generateId(),
+      timestamp: Date.now(),
+    };
+
+    console.log('Store: addMessage called', { 
+      sessionId, 
+      role: message.role, 
+      messageId: newMessage.id, 
+      contentLength: message.content.length 
+    });
+
+    set((state) => {
+      // Prevent adding duplicate messages
+      const session = state.sessions.find(s => s.id === sessionId);
+      if (session) {
+        const existingMessage = session.messages.find(m => m.id === newMessage.id);
+        if (existingMessage) {
+          console.log('Store: Message already exists, skipping add');
+          return state;
+        }
+      }
+
+      const updatedSessions = state.sessions.map(session => {
+        if (session.id === sessionId) {
+          return {
+            ...session,
+            messages: [...session.messages, newMessage],
+            updatedAt: Date.now(),
+          };
+        }
+        return session;
+      });
+
+      return {
+        sessions: updatedSessions,
+        currentSession: state.currentSession?.id === sessionId
+          ? updatedSessions.find(s => s.id === sessionId) || state.currentSession
+          : state.currentSession,
+      };
+    });
+  },
+
+  updateMessage: (sessionId: string, messageId: string, content: string) => {
+    set((state) => {
+      console.log('Store: updateMessage called', { 
+        sessionId, 
+        messageId, 
+        contentLength: content.length,
+        currentSessionId: state.currentSession?.id,
+        isCurrentSession: state.currentSession?.id === sessionId
+      });
+      
+      // Only update if this is for the current session
+      if (state.currentSession?.id !== sessionId) {
+        console.log('Store: Ignoring updateMessage for non-current session');
+        return state;
+      }
+      
+      const updatedSessions = state.sessions.map(session => {
+        if (session.id === sessionId) {
+          const updatedMessages = session.messages.map(msg => {
+            if (msg.id === messageId) {
+              console.log('Store: Updating message', msg.id, 'with content length:', content.length);
+              return { ...msg, content };
+            }
+            return msg;
+          });
+          
+          return {
+            ...session,
+            messages: updatedMessages,
+            updatedAt: Date.now(),
+          };
+        }
+        return session;
+      });
+
+      const newCurrentSession = state.currentSession?.id === sessionId
+        ? updatedSessions.find(s => s.id === sessionId) || state.currentSession
+        : state.currentSession;
+
+      console.log('Store: Updated session messages count:', newCurrentSession?.messages.length);
+
+      return {
+        sessions: updatedSessions,
+        currentSession: newCurrentSession,
+      };
+    });
+  },
+
+  // Models
+  models: [],
+  loadModels: async () => {
+    try {
+      set({ loading: true, error: null });
+      console.log('Loading models from API...');
+      const response = await ollamaApi.getModels();
+      console.log('Models API response:', response);
+      
+      if (response.success && response.data) {
+        console.log('Models loaded successfully:', response.data.length, 'models');
+        set({ models: response.data, loading: false });
+        
+        if (response.data.length === 0) {
+          toast.error('No models found. Please install models in Ollama first.');
+        }
+      } else {
+        console.error('Models API returned unsuccessful response:', response);
+        set({ models: [], loading: false });
+        toast.error('Failed to load models from Ollama');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || 'Failed to connect to Ollama service';
+      console.error('Failed to load models:', error);
+      console.error('Error details:', error.response?.data);
+      set({ error: errorMessage, loading: false, models: [] });
+      toast.error('Cannot connect to Ollama. Please ensure it is running.');
+    }
+  },
+
+  selectedModel: '',
+  setSelectedModel: (model) => set({ selectedModel: model }),
+
+  updateCurrentSessionModel: async (model: string) => {
+    const state = get();
+    if (!state.currentSession) {
+      throw new Error('No current session to update');
+    }
+
+    try {
+      const response = await chatApi.updateSession(state.currentSession.id, { model });
+      
+      if (response.success && response.data) {
+        set((state) => ({
+          sessions: state.sessions.map(s => 
+            s.id === state.currentSession?.id ? response.data! : s
+          ),
+          currentSession: response.data,
+          selectedModel: model,
+        }));
+        toast.success('Model updated for current chat');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || 'Failed to update session model';
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  // UI state
+  loading: false,
+  error: null,
+  setError: (error) => set({ error }),
+}));

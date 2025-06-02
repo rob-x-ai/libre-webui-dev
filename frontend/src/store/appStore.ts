@@ -1,0 +1,90 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { UserPreferences, Theme } from '@/types';
+
+interface AppState {
+  // Theme
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+
+  // Sidebar
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
+
+  // User preferences
+  preferences: UserPreferences;
+  setPreferences: (preferences: Partial<UserPreferences>) => void;
+
+  // UI state
+  isGenerating: boolean;
+  setIsGenerating: (generating: boolean) => void;
+}
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      // Theme
+      theme: { mode: 'light' },
+      setTheme: (theme) => {
+        set({ theme });
+        // Apply theme to document
+        if (theme.mode === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      },
+      toggleTheme: () => {
+        const currentTheme = get().theme;
+        const newMode = currentTheme.mode === 'light' ? 'dark' : 'light';
+        get().setTheme({ mode: newMode });
+      },
+
+      // Sidebar
+      sidebarOpen: true,
+      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+
+      // User preferences
+      preferences: {
+        theme: { mode: 'light' },
+        defaultModel: '',
+        generationOptions: {
+          temperature: 0.7,
+          top_p: 0.9,
+          top_k: 40,
+          num_predict: -1,
+        },
+      },
+      setPreferences: (newPreferences) =>
+        set((state) => ({
+          preferences: { ...state.preferences, ...newPreferences },
+        })),
+
+      // UI state
+      isGenerating: false,
+      setIsGenerating: (generating) => set({ isGenerating: generating }),
+    }),
+    {
+      name: 'libre-webui-app-state',
+      partialize: (state) => ({
+        theme: state.theme,
+        sidebarOpen: state.sidebarOpen,
+        preferences: state.preferences,
+      }),
+    }
+  )
+);
+
+// Initialize theme on app start
+const initializeTheme = () => {
+  const { theme, setTheme } = useAppStore.getState();
+  setTheme(theme);
+};
+
+// Call on module load
+if (typeof window !== 'undefined') {
+  initializeTheme();
+}
