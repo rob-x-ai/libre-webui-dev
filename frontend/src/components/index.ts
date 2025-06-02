@@ -1,5 +1,6 @@
 export { Header } from './Header';
 export { Sidebar } from './Sidebar';
+export { SidebarToggle } from './SidebarToggle';
 export { ChatInput } from './ChatInput';
 export { ChatMessage } from './ChatMessage';
 export { ChatMessages } from './ChatMessages';

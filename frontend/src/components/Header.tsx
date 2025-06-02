@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
-import { Menu, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SettingsModal } from '@/components/SettingsModal';
 import { Logo } from '@/components/Logo';
 import { useChatStore } from '@/store/chatStore';
-import { useAppStore } from '@/store/appStore';
 import { cn } from '@/utils';
 
 interface HeaderProps {
-  onToggleSidebar: () => void;
   className?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  onToggleSidebar,
   className,
 }) => {
   const { currentSession, models, updateCurrentSessionModel } = useChatStore();
-  const { sidebarOpen } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleModelChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -42,16 +38,6 @@ export const Header: React.FC<HeaderProps> = ({
       >
         {/* Left side */}
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggleSidebar}
-            className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
-            title={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
-          >
-            <Menu className="h-4 w-4" />
-          </Button>
-
           <div className="flex items-center gap-3">
             <Logo size="sm" />
             <div className="flex flex-col">

@@ -33,7 +33,7 @@ export const ChatLayout: React.FC<ChatLayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <Header onToggleSidebar={toggleSidebar} />
+        <Header />
         <main className="flex-1 overflow-hidden">
           {children}
         </main>

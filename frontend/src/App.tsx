@@ -3,13 +3,15 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
+import { SidebarToggle } from '@/components/SidebarToggle';
 import { ChatPage } from '@/pages';
 import { useAppStore } from '@/store/appStore';
 import { useInitializeApp } from '@/hooks/useInitializeApp';
+import { cn } from '@/utils';
 import websocketService from '@/utils/websocket';
 
 const App: React.FC = () => {
-  const { sidebarOpen, setSidebarOpen, toggleSidebar } = useAppStore();
+  const { sidebarOpen, setSidebarOpen } = useAppStore();
 
   // Initialize the app
   useInitializeApp();
@@ -25,14 +27,22 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="flex h-screen bg-gray-25 dark:bg-dark-100 text-gray-900 dark:text-dark-800">
+      <div className="flex h-screen bg-white dark:bg-dark-50 text-gray-900 dark:text-dark-800">
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
         
-        <div className="flex-1 flex flex-col min-w-0">
-          <Header onToggleSidebar={toggleSidebar} />
+        <SidebarToggle />
+        
+        <div 
+          className={cn(
+            "flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white dark:bg-dark-50",
+            // Add left margin on desktop when sidebar is open to prevent content jumping
+            sidebarOpen ? "lg:ml-80" : "lg:ml-0"
+          )}
+        >
+          <Header />
           <main className="flex-1 overflow-hidden bg-white dark:bg-dark-50">
             <ChatPage />
           </main>
