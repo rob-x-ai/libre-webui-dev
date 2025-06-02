@@ -5,6 +5,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SettingsModal } from '@/components/SettingsModal';
 import { Logo } from '@/components/Logo';
 import { useChatStore } from '@/store/chatStore';
+import { useAppStore } from '@/store/appStore';
 import { cn } from '@/utils';
 
 interface HeaderProps {
@@ -15,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   className,
 }) => {
   const { currentSession, models, updateCurrentSessionModel } = useChatStore();
+  const { hasSeenSettingsNotification, markSettingsNotificationAsSeen } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleModelChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -26,6 +28,14 @@ export const Header: React.FC<HeaderProps> = ({
         console.error('Failed to update session model:', error);
       }
     }
+  };
+
+  const handleSettingsClick = () => {
+    // Mark notification as seen when settings is opened
+    if (!hasSeenSettingsNotification) {
+      markSettingsNotificationAsSeen();
+    }
+    setSettingsOpen(true);
   };
 
   return (
@@ -65,15 +75,21 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
-            title="Settings"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
+              title="Settings - New beta features available!"
+              onClick={handleSettingsClick}
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            {/* Simple green notification dot - only show if user hasn't seen settings */}
+            {!hasSeenSettingsNotification && (
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-dark-50"></div>
+            )}
+          </div>
         </div>
       </header>
 

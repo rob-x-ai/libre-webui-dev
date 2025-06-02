@@ -20,6 +20,10 @@ interface AppState {
   // UI state
   isGenerating: boolean;
   setIsGenerating: (generating: boolean) => void;
+
+  // Settings notification
+  hasSeenSettingsNotification: boolean;
+  markSettingsNotificationAsSeen: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -66,6 +70,10 @@ export const useAppStore = create<AppState>()(
       // UI state
       isGenerating: false,
       setIsGenerating: (generating) => set({ isGenerating: generating }),
+
+      // Settings notification
+      hasSeenSettingsNotification: false,
+      markSettingsNotificationAsSeen: () => set({ hasSeenSettingsNotification: true }),
     }),
     {
       name: 'libre-webui-app-state',
@@ -73,6 +81,7 @@ export const useAppStore = create<AppState>()(
         theme: state.theme,
         sidebarOpen: state.sidebarOpen,
         preferences: state.preferences,
+        hasSeenSettingsNotification: state.hasSeenSettingsNotification,
       }),
     }
   )
