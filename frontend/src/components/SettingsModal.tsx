@@ -443,11 +443,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       />
       
       {/* Modal */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-4xl mx-4">
-        <div className="bg-white dark:bg-dark-50 rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-200 animate-scale-in max-h-[90vh] flex flex-col">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-4xl mx-4 max-h-[95vh] sm:max-h-[90vh]">
+        <div className="bg-white dark:bg-dark-50 rounded-lg sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-200 animate-scale-in flex flex-col h-full max-h-[95vh] sm:max-h-[90vh]">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-dark-200">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-800">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-dark-200">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-dark-800">
               Settings
             </h2>
             <Button
@@ -463,7 +463,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           <div className="flex flex-1 min-h-0">
             {/* Sidebar Tabs */}
-            <div className="w-64 border-r border-gray-100 dark:border-dark-200 p-4">
+            <div className="w-48 sm:w-64 border-r border-gray-100 dark:border-dark-200 p-3 sm:p-4">
               <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
@@ -471,16 +471,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors duration-200 ${
+                      className={`w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 text-left rounded-lg transition-colors duration-200 ${
                         activeTab === tab.id
                           ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800'
                           : 'text-gray-700 dark:text-dark-700 hover:bg-gray-50 dark:hover:bg-dark-200'
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-sm font-medium">{tab.label}</span>
+                      <Icon className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm font-medium truncate">{tab.label}</span>
                       {tab.id === 'models' && (
-                        <span className="ml-auto text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full">
+                        <span className="ml-auto text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-1.5 sm:px-2 py-0.5 rounded-full hidden sm:inline">
                           Beta
                         </span>
                       )}
@@ -491,13 +491,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
               {renderTabContent()}
             </div>
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 p-6 border-t border-gray-100 dark:border-dark-200">
+          <div className="flex justify-end gap-3 p-4 sm:p-6 border-t border-gray-100 dark:border-dark-200">
             <Button variant="outline" onClick={onClose} size="md">
               Close
             </Button>

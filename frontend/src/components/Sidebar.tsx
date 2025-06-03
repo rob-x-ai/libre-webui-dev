@@ -108,11 +108,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-gray-200 dark:border-dark-200">
-            <div className="flex items-center justify-between mb-6">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-dark-200">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <div className="flex items-center gap-3">
                 <Logo size="sm" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-800">
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-800">
                   Libre WebUI
                 </h2>
               </div>
@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Sessions list */}
           <div className="flex-1 overflow-y-auto scrollbar-thin">
-            <div className="p-4">
+            <div className="p-3 sm:p-4">
               {sessions.length === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-dark-600">
                   <MessageSquare className="h-8 w-8 mx-auto mb-3 opacity-50" />

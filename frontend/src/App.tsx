@@ -39,6 +39,8 @@ const App: React.FC = () => {
           className={cn(
             "flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white dark:bg-dark-50",
             // Add left margin on desktop when sidebar is open to prevent content jumping
+            // On mobile, always use full width regardless of sidebar state
+            "w-full",
             sidebarOpen ? "lg:ml-80" : "lg:ml-0"
           )}
         >

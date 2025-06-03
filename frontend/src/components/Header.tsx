@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Menu } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SettingsModal } from '@/components/SettingsModal';
@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   className,
 }) => {
   const { currentSession, models, updateCurrentSessionModel } = useChatStore();
-  const { hasSeenSettingsNotification, markSettingsNotificationAsSeen } = useAppStore();
+  const { hasSeenSettingsNotification, markSettingsNotificationAsSeen, sidebarOpen, toggleSidebar } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleModelChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -42,21 +42,34 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header
         className={cn(
-          'flex items-center justify-between p-4 border-b border-gray-100 dark:border-dark-200 bg-white/80 dark:bg-dark-50/80 backdrop-blur-sm',
+          'flex items-center justify-between p-3 sm:p-4 border-b border-gray-100 dark:border-dark-200 bg-white/80 dark:bg-dark-50/80 backdrop-blur-sm',
           className
         )}
       >
         {/* Left side */}
         <div className="flex items-center gap-3">
+          {/* Mobile menu button - only show on mobile when sidebar is closed */}
+          {!sidebarOpen && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSidebar}
+              className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200 lg:hidden"
+              title="Open sidebar"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          )}
+          
           <div className="flex items-center gap-3">
             <Logo size="sm" />
-            <div className="flex flex-col">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight">
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight truncate">
                 {currentSession?.title || 'Libre WebUI'}
               </h1>
               {currentSession && models.length > 0 && (
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-gray-500 dark:text-dark-500">Model:</span>
+                  <span className="text-xs text-gray-500 dark:text-dark-500 hidden sm:inline">Model:</span>
                   <Select
                     value={currentSession.model}
                     onChange={handleModelChange}
@@ -64,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({
                       value: model.name, 
                       label: model.name 
                     }))}
-                    className="text-xs min-w-0 py-1 px-2 h-6 border-0 bg-gray-50 dark:bg-dark-200 rounded-lg"
+                    className="text-xs min-w-0 py-1 px-2 h-6 border-0 bg-gray-50 dark:bg-dark-200 rounded-lg max-w-32 sm:max-w-none"
                   />
                 </div>
               )}
@@ -73,13 +86,13 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <ThemeToggle />
           <div className="relative">
             <Button
               variant="ghost"
               size="sm"
-              className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
+              className="h-8 w-8 sm:h-9 sm:w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
               title="Settings - New beta features available!"
               onClick={handleSettingsClick}
             >
