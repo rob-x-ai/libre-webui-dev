@@ -47,9 +47,6 @@ updates:
         patterns:
           - "typescript*"
           - "@types/*"
-    auto-merge:
-      dependency-type: "development"
-      update-type: "semver:minor"
     ignore:
       - dependency-name: "react"
         update-types: ["version-update:semver-major"]
