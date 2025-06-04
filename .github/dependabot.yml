@@ -9,9 +9,9 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 10
     reviewers:
-      - "your-github-username"
+      - "kroonen"
     assignees:
-      - "your-github-username"
+      - "kroonen"
     commit-message:
       prefix: "deps"
       prefix-development: "deps-dev"
