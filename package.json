@@ -17,6 +17,18 @@
     "start": "cd backend && npm start",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
   },
+  "overrides": {
+    "prismjs": "^1.30.0",
+    "refractor": {
+      "prismjs": "^1.30.0"
+    },
+    "react-syntax-highlighter": {
+      "prismjs": "^1.30.0",
+      "refractor": {
+        "prismjs": "^1.30.0"
+      }
+    }
+  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   },
