@@ -74,6 +74,27 @@ export const ollamaApi = {
 
   deleteModel: (modelName: string): Promise<ApiResponse> =>
     api.delete(`/ollama/models/${modelName}`).then(res => res.data),
+
+  showModel: (modelName: string, verbose = false): Promise<ApiResponse<any>> =>
+    api.get(`/ollama/models/${modelName}`, { params: { verbose } }).then(res => res.data),
+
+  createModel: (payload: any): Promise<ApiResponse> =>
+    api.post('/ollama/models', payload).then(res => res.data),
+
+  copyModel: (source: string, destination: string): Promise<ApiResponse> =>
+    api.post('/ollama/models/copy', { source, destination }).then(res => res.data),
+
+  pushModel: (modelName: string): Promise<ApiResponse> =>
+    api.post(`/ollama/models/${modelName}/push`).then(res => res.data),
+
+  generateEmbeddings: (payload: any): Promise<ApiResponse<any>> =>
+    api.post('/ollama/embed', payload).then(res => res.data),
+
+  listRunningModels: (): Promise<ApiResponse<any>> =>
+    api.get('/ollama/running').then(res => res.data),
+
+  getVersion: (): Promise<ApiResponse<{ version: string }>> =>
+    api.get('/ollama/version').then(res => res.data),
 };
 
 export default api;

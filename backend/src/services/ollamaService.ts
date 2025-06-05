@@ -134,6 +134,73 @@ class OllamaService {
       throw new Error(error.response?.data?.error || 'Failed to delete model');
     }
   }
+
+  async showModel(modelName: string, verbose = false): Promise<any> {
+    try {
+      const response = await this.client.post('/api/show', { model: modelName, verbose });
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to show model:', error);
+      throw new Error(error.response?.data?.error || 'Failed to show model');
+    }
+  }
+
+  async createModel(payload: any): Promise<void> {
+    try {
+      await this.client.post('/api/create', payload);
+    } catch (error: any) {
+      console.error('Failed to create model:', error);
+      throw new Error(error.response?.data?.error || 'Failed to create model');
+    }
+  }
+
+  async copyModel(source: string, destination: string): Promise<void> {
+    try {
+      await this.client.post('/api/copy', { source, destination });
+    } catch (error: any) {
+      console.error('Failed to copy model:', error);
+      throw new Error(error.response?.data?.error || 'Failed to copy model');
+    }
+  }
+
+  async pushModel(modelName: string): Promise<void> {
+    try {
+      await this.client.post('/api/push', { model: modelName });
+    } catch (error: any) {
+      console.error('Failed to push model:', error);
+      throw new Error(error.response?.data?.error || 'Failed to push model');
+    }
+  }
+
+  async generateEmbeddings(payload: any): Promise<any> {
+    try {
+      const response = await this.client.post('/api/embed', payload);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to generate embeddings:', error);
+      throw new Error(error.response?.data?.error || 'Failed to generate embeddings');
+    }
+  }
+
+  async listRunningModels(): Promise<any> {
+    try {
+      const response = await this.client.get('/api/ps');
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to list running models:', error);
+      throw new Error(error.response?.data?.error || 'Failed to list running models');
+    }
+  }
+
+  async getVersion(): Promise<any> {
+    try {
+      const response = await this.client.get('/api/version');
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get version:', error);
+      throw new Error(error.response?.data?.error || 'Failed to get Ollama version');
+    }
+  }
 }
 
 export default new OllamaService();
