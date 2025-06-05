@@ -39,6 +39,7 @@ npm run dev
 - Real-time chat with Ollama models
 - Fully private, offline inference
 - Zero telemetry
+- Full Ollama API integration (model management, embeddings, version info)
 
 ## License
 MIT
