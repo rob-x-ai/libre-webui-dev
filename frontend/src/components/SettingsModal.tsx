@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Moon, Sun, User, Bot, Database, Shield, Palette, Settings } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
+import { ModelTools } from '@/components/ModelTools';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
 
@@ -96,8 +97,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </label>
                 </div>
               </div>
+              </div>
             </div>
-          </div>
         );
 
       case 'appearance':
@@ -256,6 +257,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </div>
               </div>
+              <ModelTools />
             </div>
           </div>
         );
