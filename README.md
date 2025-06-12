@@ -32,6 +32,15 @@ npm run dev
 - Backend: http://localhost:3001
 - Ollama: http://localhost:11434
 
+## Configuration
+
+The app automatically generates configuration files on first run:
+
+- `backend/preferences.json` - User preferences (default model, theme, system message)
+- `backend/sessions.json` - Chat session data
+
+These files are automatically created with sensible defaults and are excluded from version control to keep your personal settings private.
+
 ## Features
 - Clean, minimal interface
 - Light/Dark mode

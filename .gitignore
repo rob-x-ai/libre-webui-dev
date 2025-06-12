@@ -42,6 +42,9 @@ Thumbs.db
 # Session data
 sessions.json
 
+# User preferences (generated at runtime)
+preferences.json
+
 # TypeScript
 *.tsbuildinfo
 

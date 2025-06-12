@@ -13,7 +13,7 @@ class PreferencesService {
   private defaultPreferences: UserPreferences = {
     defaultModel: '',
     theme: 'light',
-    systemMessage: '',
+    systemMessage: 'You are a helpful assistant.',
   };
 
   constructor() {
@@ -23,6 +23,12 @@ class PreferencesService {
   private ensurePreferencesFile() {
     try {
       if (!fs.existsSync(this.preferencesFile)) {
+        // Ensure the directory exists
+        const dir = path.dirname(this.preferencesFile);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        
         fs.writeFileSync(this.preferencesFile, JSON.stringify(this.defaultPreferences, null, 2));
         console.log('Created preferences.json with default settings');
       }
