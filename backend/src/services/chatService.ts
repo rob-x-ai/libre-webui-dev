@@ -2,6 +2,7 @@ import { ChatSession, ChatMessage } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
+import preferencesService from './preferencesService';
 
 class ChatService {
   private sessions: Map<string, ChatSession> = new Map();
@@ -47,6 +48,16 @@ class ChatService {
     };
 
     this.sessions.set(sessionId, session);
+    
+    // Add system message from preferences if one exists
+    const systemMessage = preferencesService.getSystemMessage();
+    if (systemMessage && systemMessage.trim()) {
+      this.addMessage(sessionId, {
+        role: 'system',
+        content: systemMessage.trim(),
+      });
+    }
+    
     this.saveSessions();
     return session;
   }
@@ -98,7 +109,8 @@ class ChatService {
     session.updatedAt = Date.now();
 
     // Auto-generate title from first user message
-    if (session.messages.length === 1 && message.role === 'user' && session.title === 'New Chat') {
+    const userMessages = session.messages.filter(msg => msg.role === 'user');
+    if (userMessages.length === 1 && message.role === 'user' && session.title === 'New Chat') {
       session.title = this.generateTitle(message.content);
     }
 
@@ -136,9 +148,15 @@ class ChatService {
     const session = this.sessions.get(sessionId);
     if (!session) return [];
 
-    // Return last N messages for context, but ensure we have user-assistant pairs
-    const messages = session.messages.slice(-maxMessages);
-    return messages;
+    // Separate system messages from conversation messages
+    const systemMessages = session.messages.filter(msg => msg.role === 'system');
+    const conversationMessages = session.messages.filter(msg => msg.role !== 'system');
+
+    // Take the last N conversation messages, but always include all system messages first
+    const recentConversation = conversationMessages.slice(-maxMessages);
+    
+    // Return system messages first, then conversation messages
+    return [...systemMessages, ...recentConversation];
   }
 }
 

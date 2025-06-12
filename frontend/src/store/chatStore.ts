@@ -27,6 +27,10 @@ interface ChatState {
   setSelectedModel: (model: string) => void;
   updateCurrentSessionModel: (model: string) => Promise<void>;
 
+  // System Message
+  systemMessage: string;
+  setSystemMessage: (message: string) => void;
+
   // UI state
   loading: boolean;
   error: string | null;
@@ -52,11 +56,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
       
       if (response.success && response.data) {
         const newSession = response.data;
+        
         set((state) => ({
           sessions: [newSession, ...state.sessions],
           currentSession: newSession,
           loading: false,
         }));
+        
+        // Note: System message is now automatically added by the backend when creating sessions
+        
         toast.success('New chat created');
       }
     } catch (error: any) {
@@ -280,9 +288,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
   loadPreferences: async () => {
     try {
       const response = await preferencesApi.getPreferences();
-      if (response.success && response.data?.defaultModel) {
-        set({ selectedModel: response.data.defaultModel });
-        console.log('Loaded default model from backend:', response.data.defaultModel);
+      if (response.success && response.data) {
+        const { defaultModel, systemMessage } = response.data;
+        if (defaultModel) {
+          set({ selectedModel: defaultModel });
+          console.log('Loaded default model from backend:', defaultModel);
+        }
+        if (systemMessage !== undefined) {
+          set({ systemMessage: systemMessage });
+          console.log('Loaded system message from backend:', systemMessage);
+        }
       }
     } catch (error) {
       console.warn('Failed to load preferences from backend:', error);
@@ -322,6 +337,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
       toast.error(errorMessage);
       throw error;
     }
+  },
+
+  // System Message
+  systemMessage: '',
+  setSystemMessage: (message) => {
+    set({ systemMessage: message });
+    // Save to backend preferences when system message is updated
+    preferencesApi.setSystemMessage(message).catch((error) => {
+      console.warn('Failed to save system message to backend:', error);
+    });
   },
 
   // UI state

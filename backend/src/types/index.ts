@@ -18,6 +18,7 @@ export interface ChatSession {
 export interface UserPreferences {
   defaultModel: string;
   theme: 'light' | 'dark';
+  systemMessage: string;
 }
 
 export interface OllamaModel {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Moon, Sun, User, Bot, Database, Shield, Palette, Settings } from 'lucide-react';
-import { Button, Select } from '@/components/ui';
+import { Button, Select, Textarea } from '@/components/ui';
 import { ModelTools } from '@/components/ModelTools';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
@@ -15,7 +15,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { models, selectedModel, setSelectedModel, clearAllSessions, loading } = useChatStore();
+  const { models, selectedModel, setSelectedModel, systemMessage, setSystemMessage, clearAllSessions, loading } = useChatStore();
   const { theme, setTheme } = useAppStore();
   const [activeTab, setActiveTab] = useState('general');
 
@@ -29,6 +29,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     const newModel = event.target.value;
     setSelectedModel(newModel);
     toast.success('Default model updated');
+  };
+
+  const handleSystemMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newMessage = event.target.value;
+    setSystemMessage(newMessage);
+    toast.success('System message updated');
   };
 
   const handleClearAllHistory = async () => {
@@ -238,6 +244,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </div>
                   </div>
                 )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-700 mb-2">
+                    System Message
+                  </label>
+                  <Textarea
+                    value={systemMessage}
+                    onChange={handleSystemMessageChange}
+                    placeholder="Enter a system message that will be added to the beginning of new chat sessions..."
+                    className="w-full min-h-[100px] bg-gray-50 dark:bg-dark-200 border-gray-200 dark:border-dark-300"
+                    rows={4}
+                  />
+                  <p className="text-xs text-gray-500 dark:text-dark-600 mt-1">
+                    This message will be automatically added to the start of new conversations to set the AI's behavior and context.
+                  </p>
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-dark-700 mb-2">
@@ -495,17 +517,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </nav>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+            {/* Tab Content */}
+            <div className="flex-1 p-4 sm:p-6 overflow-auto">
               {renderTabContent()}
             </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-end gap-3 p-4 sm:p-6 border-t border-gray-100 dark:border-dark-200">
-            <Button variant="outline" onClick={onClose} size="md">
-              Close
-            </Button>
           </div>
         </div>
       </div>

@@ -55,6 +55,7 @@ export const useAppStore = create<AppState>()(
       preferences: {
         theme: { mode: 'light' },
         defaultModel: '',
+        systemMessage: '',
         generationOptions: {
           temperature: 0.7,
           top_p: 0.9,

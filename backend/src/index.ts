@@ -117,7 +117,15 @@ wss.on('connection', (ws, req) => {
         // Prepare context
         const contextMessages = chatService.getMessagesForContext(sessionId);
         const prompt = contextMessages
-          .map(msg => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+          .map(msg => {
+            if (msg.role === 'system') {
+              return `System: ${msg.content}`;
+            } else if (msg.role === 'user') {
+              return `User: ${msg.content}`;
+            } else {
+              return `Assistant: ${msg.content}`;
+            }
+          })
           .join('\n') + '\nAssistant:';
 
         let assistantContent = '';

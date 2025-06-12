@@ -56,5 +56,6 @@ export interface Theme {
 export interface UserPreferences {
   theme: Theme;
   defaultModel: string;
+  systemMessage: string;
   generationOptions: GenerationOptions;
 }

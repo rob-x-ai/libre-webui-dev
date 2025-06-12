@@ -106,6 +106,9 @@ export const preferencesApi = {
 
   setDefaultModel: (model: string): Promise<ApiResponse<UserPreferences>> =>
     api.put('/preferences/default-model', { model }).then(res => res.data),
+
+  setSystemMessage: (message: string): Promise<ApiResponse<UserPreferences>> =>
+    api.put('/preferences/system-message', { message }).then(res => res.data),
 };
 
 export default api;

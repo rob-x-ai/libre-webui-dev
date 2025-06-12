@@ -4,6 +4,7 @@ import path from 'path';
 export interface UserPreferences {
   defaultModel: string;
   theme: 'light' | 'dark';
+  systemMessage: string;
   // Future preferences can be added here
 }
 
@@ -12,6 +13,7 @@ class PreferencesService {
   private defaultPreferences: UserPreferences = {
     defaultModel: '',
     theme: 'light',
+    systemMessage: '',
   };
 
   constructor() {
@@ -62,8 +64,16 @@ class PreferencesService {
     return this.updatePreferences({ defaultModel: model });
   }
 
+  setSystemMessage(message: string): UserPreferences {
+    return this.updatePreferences({ systemMessage: message });
+  }
+
   getDefaultModel(): string {
     return this.getPreferences().defaultModel;
+  }
+
+  getSystemMessage(): string {
+    return this.getPreferences().systemMessage;
   }
 }
 

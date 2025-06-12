@@ -65,4 +65,31 @@ router.put('/default-model', async (req: Request, res: Response<ApiResponse<User
   }
 });
 
+// Set system message (convenience endpoint)
+router.put('/system-message', async (req: Request, res: Response<ApiResponse<UserPreferences>>): Promise<void> => {
+  try {
+    const { message } = req.body;
+    
+    if (message === undefined) {
+      res.status(400).json({
+        success: false,
+        error: 'Message is required',
+      });
+      return;
+    }
+
+    const updatedPreferences = preferencesService.setSystemMessage(message);
+    
+    res.json({
+      success: true,
+      data: updatedPreferences,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 export default router;
