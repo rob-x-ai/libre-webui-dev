@@ -16,11 +16,11 @@ export const useInitializeApp = () => {
           return;
         }
 
-        // Load models, sessions, and preferences in parallel
+        // Load preferences first, then models and sessions
+        await loadPreferences();
         await Promise.all([
           loadModels(),
           loadSessions(),
-          loadPreferences(),
         ]);
 
       } catch (error) {
@@ -30,7 +30,7 @@ export const useInitializeApp = () => {
     };
 
     initialize();
-  }, [loadSessions, loadModels]);
+  }, [loadSessions, loadModels, loadPreferences]);
 
   // Set default model when models are loaded
   useEffect(() => {
@@ -43,10 +43,15 @@ export const useInitializeApp = () => {
         const availableModelNames = models.map(m => m.name);
         if (!availableModelNames.includes(currentSelected)) {
           // Selected model no longer available, use first available
+          console.log('Selected model not available, falling back to first model:', models[0].name);
           setSelectedModel(models[0].name);
+        } else {
+          // Model is available, keep it selected (don't override)
+          console.log('Keeping selected model from preferences:', currentSelected);
         }
       } else {
         // No model selected, use first available
+        console.log('No model selected, using first available:', models[0].name);
         setSelectedModel(models[0].name);
       }
     }
