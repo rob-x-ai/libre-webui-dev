@@ -9,6 +9,7 @@ import { WebSocketServer } from 'ws';
 import { errorHandler, notFoundHandler, requestLogger } from './middleware';
 import ollamaRoutes from './routes/ollama';
 import chatRoutes from './routes/chat';
+import preferencesRoutes from './routes/preferences';
 import ollamaService from './services/ollamaService';
 import chatService from './services/chatService';
 
@@ -55,6 +56,7 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/ollama', ollamaRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/preferences', preferencesRoutes);
 
 // Error handling
 app.use(notFoundHandler);

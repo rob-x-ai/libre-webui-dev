@@ -4,6 +4,7 @@ import { Button, Select } from '@/components/ui';
 import { ModelTools } from '@/components/ModelTools';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
+import toast from 'react-hot-toast';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -25,7 +26,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedModel(event.target.value);
+    const newModel = event.target.value;
+    setSelectedModel(newModel);
+    toast.success('Default model updated');
   };
 
   const handleClearAllHistory = async () => {

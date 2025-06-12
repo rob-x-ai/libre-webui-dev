@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { ChatSession, ChatMessage, OllamaModel } from '@/types';
-import { chatApi, ollamaApi } from '@/utils/api';
+import { chatApi, ollamaApi, preferencesApi } from '@/utils/api';
 import { generateId } from '@/utils';
 import toast from 'react-hot-toast';
 
@@ -22,6 +22,7 @@ interface ChatState {
   // Models
   models: OllamaModel[];
   loadModels: () => Promise<void>;
+  loadPreferences: () => Promise<void>;
   selectedModel: string;
   setSelectedModel: (model: string) => void;
   updateCurrentSessionModel: (model: string) => Promise<void>;
@@ -259,31 +260,43 @@ export const useChatStore = create<ChatState>((set, get) => ({
       set({ loading: true, error: null });
       console.log('Loading models from API...');
       const response = await ollamaApi.getModels();
-      console.log('Models API response:', response);
       
       if (response.success && response.data) {
-        console.log('Models loaded successfully:', response.data.length, 'models');
+        console.log('Models loaded successfully:', response.data.length);
         set({ models: response.data, loading: false });
-        
-        if (response.data.length === 0) {
-          toast.error('No models found. Please install models in Ollama first.');
-        }
       } else {
-        console.error('Models API returned unsuccessful response:', response);
-        set({ models: [], loading: false });
-        toast.error('Failed to load models from Ollama');
+        console.error('Failed to load models:', response);
+        set({ loading: false });
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || 'Failed to connect to Ollama service';
-      console.error('Failed to load models:', error);
-      console.error('Error details:', error.response?.data);
-      set({ error: errorMessage, loading: false, models: [] });
-      toast.error('Cannot connect to Ollama. Please ensure it is running.');
+      console.error('Error loading models:', error);
+      const errorMessage = error.response?.data?.error || 'Failed to load models';
+      set({ error: errorMessage, loading: false });
+      toast.error(errorMessage);
+    }
+  },
+
+  // Load preferences from backend and set default model
+  loadPreferences: async () => {
+    try {
+      const response = await preferencesApi.getPreferences();
+      if (response.success && response.data?.defaultModel) {
+        set({ selectedModel: response.data.defaultModel });
+        console.log('Loaded default model from backend:', response.data.defaultModel);
+      }
+    } catch (error) {
+      console.warn('Failed to load preferences from backend:', error);
     }
   },
 
   selectedModel: '',
-  setSelectedModel: (model) => set({ selectedModel: model }),
+  setSelectedModel: (model) => {
+    set({ selectedModel: model });
+    // Save to backend preferences when model is selected
+    preferencesApi.setDefaultModel(model).catch((error) => {
+      console.warn('Failed to save default model to backend:', error);
+    });
+  },
 
   updateCurrentSessionModel: async (model: string) => {
     const state = get();

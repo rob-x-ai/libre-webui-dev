@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ApiResponse, ChatSession, ChatMessage, OllamaModel } from '@/types';
+import { ApiResponse, ChatSession, ChatMessage, OllamaModel, UserPreferences } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
@@ -95,6 +95,17 @@ export const ollamaApi = {
 
   getVersion: (): Promise<ApiResponse<{ version: string }>> =>
     api.get('/ollama/version').then(res => res.data),
+};
+
+export const preferencesApi = {
+  getPreferences: (): Promise<ApiResponse<UserPreferences>> =>
+    api.get('/preferences').then(res => res.data),
+
+  updatePreferences: (updates: Partial<UserPreferences>): Promise<ApiResponse<UserPreferences>> =>
+    api.put('/preferences', updates).then(res => res.data),
+
+  setDefaultModel: (model: string): Promise<ApiResponse<UserPreferences>> =>
+    api.put('/preferences/default-model', { model }).then(res => res.data),
 };
 
 export default api;

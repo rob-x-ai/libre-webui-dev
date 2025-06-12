@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useChatStore } from '@/store/chatStore';
-import { useAppStore } from '@/store/appStore';
 import { ollamaApi } from '@/utils/api';
 import toast from 'react-hot-toast';
 
 export const useInitializeApp = () => {
-  const { loadSessions, loadModels, setSelectedModel, models } = useChatStore();
-  const { preferences, setPreferences } = useAppStore();
+  const { loadSessions, loadModels, loadPreferences, setSelectedModel, models } = useChatStore();
 
   useEffect(() => {
     const initialize = async () => {
@@ -18,10 +16,11 @@ export const useInitializeApp = () => {
           return;
         }
 
-        // Load models and sessions in parallel
+        // Load models, sessions, and preferences in parallel
         await Promise.all([
           loadModels(),
           loadSessions(),
+          loadPreferences(),
         ]);
 
       } catch (error) {
@@ -36,18 +35,20 @@ export const useInitializeApp = () => {
   // Set default model when models are loaded
   useEffect(() => {
     if (models.length > 0) {
-      // Use saved default model if it exists in available models, otherwise use first model
-      const availableModelNames = models.map(m => m.name);
-      const modelToSelect = preferences.defaultModel && availableModelNames.includes(preferences.defaultModel)
-        ? preferences.defaultModel
-        : models[0].name;
+      // Check if we already have a selected model from backend preferences
+      const { selectedModel: currentSelected } = useChatStore.getState();
       
-      setSelectedModel(modelToSelect);
-      
-      // Update preferences if we're using a different model
-      if (modelToSelect !== preferences.defaultModel) {
-        setPreferences({ defaultModel: modelToSelect });
+      if (currentSelected) {
+        // Verify the selected model from backend is still available
+        const availableModelNames = models.map(m => m.name);
+        if (!availableModelNames.includes(currentSelected)) {
+          // Selected model no longer available, use first available
+          setSelectedModel(models[0].name);
+        }
+      } else {
+        // No model selected, use first available
+        setSelectedModel(models[0].name);
       }
     }
-  }, [models, preferences.defaultModel, setSelectedModel, setPreferences]);
+  }, [models, setSelectedModel]);
 };

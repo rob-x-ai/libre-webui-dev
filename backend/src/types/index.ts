@@ -15,6 +15,11 @@ export interface ChatSession {
   updatedAt: number;
 }
 
+export interface UserPreferences {
+  defaultModel: string;
+  theme: 'light' | 'dark';
+}
+
 export interface OllamaModel {
   name: string;
   size: number;

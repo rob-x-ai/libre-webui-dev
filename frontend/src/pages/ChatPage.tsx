@@ -61,7 +61,7 @@ export const ChatPage: React.FC = () => {
                   No models available. Make sure Ollama is running and has models installed.
                 </p>
                 <code className="block text-xs bg-warning-100 dark:bg-warning-900/40 p-3 rounded-lg font-mono">
-                  ollama pull llama2
+                  ollama pull llama3.2:3b
                 </code>
               </div>
             </div>
