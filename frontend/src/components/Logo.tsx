@@ -18,7 +18,7 @@ export const Logo: React.FC<LogoProps> = ({ className, size = 'md' }) => {
       <div 
         className="w-full h-full flex items-center justify-center relative"
         style={{
-          background: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)',
+          background: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 20%, #48dbfb 40%, #ff9ff3 60%, #54a0ff 80%, #5f27cd 100%)',
         }}
       >
         {/* L Shape */}
