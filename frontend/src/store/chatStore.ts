@@ -287,20 +287,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
   // Load preferences from backend and set default model
   loadPreferences: async () => {
     try {
+      console.log('🔄 Loading preferences from backend...');
       const response = await preferencesApi.getPreferences();
+      console.log('📦 Backend preferences response:', response);
+      
       if (response.success && response.data) {
         const { defaultModel, systemMessage } = response.data;
+        console.log('📋 Extracted defaultModel:', defaultModel);
+        console.log('📋 Extracted systemMessage:', systemMessage);
+        
         if (defaultModel) {
+          console.log('✅ Setting selectedModel to:', defaultModel);
           set({ selectedModel: defaultModel });
-          console.log('Loaded default model from backend:', defaultModel);
+          console.log('✅ Loaded default model from backend:', defaultModel);
+        } else {
+          console.log('⚠️ No defaultModel found in response');
         }
+        
         if (systemMessage !== undefined) {
           set({ systemMessage: systemMessage });
-          console.log('Loaded system message from backend:', systemMessage);
+          console.log('✅ Loaded system message from backend:', systemMessage);
         }
+      } else {
+        console.log('❌ Backend response unsuccessful or no data');
       }
     } catch (error) {
-      console.warn('Failed to load preferences from backend:', error);
+      console.warn('❌ Failed to load preferences from backend:', error);
     }
   },
 
