@@ -167,7 +167,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <label className="flex items-center space-x-2">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                       defaultChecked={true}
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -179,7 +179,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <label className="flex items-center space-x-2">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                       defaultChecked={false}
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -201,7 +201,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <div className="flex items-center gap-2 mb-2">
                     <div className={`w-3 h-3 rounded-full ${systemInfo.isHealthy ? 'bg-green-500' : 'bg-red-500'}`} />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -218,7 +218,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   )}
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <div className="flex items-center gap-2 mb-2">
                     <Cpu className="h-3 w-3 text-blue-500" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -230,7 +230,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <div className="flex items-center gap-2 mb-2">
                     <MessageSquare className="h-3 w-3 text-green-500" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -242,7 +242,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <div className="flex items-center gap-2 mb-2">
                     <Database className="h-3 w-3 text-purple-500" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -274,24 +274,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 Appearance
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant={theme.mode === 'light' ? 'primary' : 'outline'}
-                  size="md"
+                <button
                   onClick={() => handleThemeChange('light')}
-                  className="flex items-center gap-2 h-12"
+                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    theme.mode === 'light'
+                      ? 'bg-primary-600 text-white shadow-sm hover:bg-primary-700 hover:shadow-md focus:ring-primary-500 dark:bg-primary-500 dark:hover:bg-primary-600 dark:focus:ring-primary-400'
+                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
+                  }`}
                 >
                   <Sun className="h-4 w-4" />
                   Light
-                </Button>
-                <Button
-                  variant={theme.mode === 'dark' ? 'primary' : 'outline'}
-                  size="md"
+                </button>
+                <button
                   onClick={() => handleThemeChange('dark')}
-                  className="flex items-center gap-2 h-12"
+                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    theme.mode === 'dark'
+                      ? 'bg-dark-300 text-dark-800 border border-dark-400 shadow-sm hover:bg-dark-400 focus:ring-dark-500'
+                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
+                  }`}
                 >
                   <Moon className="h-4 w-4" />
                   Dark
-                </Button>
+                </button>
               </div>
             </div>
             <div>
@@ -316,7 +320,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <label className="flex items-center space-x-2">
                 <input 
                   type="checkbox" 
-                  className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                   defaultChecked={true}
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -336,7 +340,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </h3>
               <div className="space-y-6">
                 {/* Default Model Selection */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     Default Model
                   </label>
@@ -358,13 +362,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 {/* Current Model Info */}
                 {selectedModel && (
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                       Current Model Information
                     </label>
-                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div className="bg-gray-50 dark:bg-dark-50 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
                           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate ml-2">
                             {selectedModel}
@@ -375,19 +379,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                           if (model?.details) {
                             return (
                               <>
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                                   <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Size:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.parameter_size}
                                   </span>
                                 </div>
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                                   <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Family:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.family}
                                   </span>
                                 </div>
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                                   <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Format:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.format}
@@ -404,7 +408,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 )}
 
                 {/* System Message */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     System Message
                   </label>
@@ -412,7 +416,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={tempSystemMessage}
                     onChange={handleSystemMessageChange}
                     placeholder="Enter a system message that will be added to the beginning of new chat sessions..."
-                    className="w-full min-h-[100px] bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="w-full min-h-[100px] bg-gray-50 dark:bg-dark-50 border-gray-200 dark:border-dark-300 text-gray-900 dark:text-gray-100"
                     rows={4}
                   />
                   <div className="flex items-center justify-between mt-3">
@@ -430,11 +434,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
 
                 {/* Model Parameters */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     Model Parameters (Beta)
                   </label>
-                  <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                  <div className="bg-gray-50 dark:bg-dark-50 border border-gray-200 dark:border-dark-300 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="h-2 w-2 bg-primary-500 rounded-full"></div>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -445,15 +449,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       </span>
                     </div>
                     <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                         <span className="text-gray-600 dark:text-gray-400 font-medium">Temperature:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">0.7</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                         <span className="text-gray-600 dark:text-gray-400 font-medium">Top P:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">0.9</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
                         <span className="text-gray-600 dark:text-gray-400 font-medium">Max Tokens:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">2048</span>
                       </div>
@@ -519,7 +523,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     About Libre WebUI
                   </h4>
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <div className="bg-gray-50 dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                     <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                       <p>
                         <strong>Privacy First:</strong> All your data stays on your machine. No telemetry, no tracking.
@@ -530,7 +534,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       <p>
                         <strong>Local Inference:</strong> Powered by Ollama for completely offline AI inference.
                       </p>
-                      <p className="pt-2 border-t border-gray-200 dark:border-gray-600 italic">
+                      <p className="pt-2 border-t border-gray-200 dark:border-dark-300 italic">
                         "Like Rick Rubin strips music to its essence, Libre WebUI strips away UI complexity. Simple. Minimal. Effective."
                       </p>
                     </div>
@@ -541,7 +545,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <label className="flex items-center space-x-2">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                       defaultChecked={true}
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -566,7 +570,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <label className="flex items-center space-x-2">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                       defaultChecked={false}
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -578,7 +582,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <label className="flex items-center space-x-2">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
                       defaultChecked={true}
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -637,7 +641,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-dark-100 text-gray-900 dark:text-gray-100"
                     placeholder="Your name"
                     disabled
                   />
@@ -670,9 +674,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       
       {/* Modal */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-4xl mx-4 max-h-[95vh] sm:max-h-[90vh]">
-        <div className="bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-scale-in flex flex-col h-full max-h-[95vh] sm:max-h-[90vh]">
+        <div className="bg-white dark:bg-dark-25 rounded-lg sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-200 animate-scale-in flex flex-col h-full max-h-[95vh] sm:max-h-[90vh]">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-dark-200">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
               Settings
             </h2>
@@ -689,7 +693,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           <div className="flex flex-1 min-h-0">
             {/* Sidebar Tabs */}
-            <div className="w-48 sm:w-64 border-r border-gray-100 dark:border-gray-700 p-3 sm:p-4">
+            <div className="w-48 sm:w-64 border-r border-gray-100 dark:border-dark-200 p-3 sm:p-4">
               <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
@@ -699,8 +703,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 text-left rounded-lg transition-colors duration-200 ${
                         activeTab === tab.id
-                          ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          ? 'bg-gray-100 dark:bg-dark-100 text-gray-900 dark:text-white border border-gray-200 dark:border-dark-300'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200'
                       }`}
                     >
                       <Icon className="h-4 w-4 flex-shrink-0" />
