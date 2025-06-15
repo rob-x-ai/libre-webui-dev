@@ -155,4 +155,92 @@ router.get('/version', async (req: Request, res: Response<ApiResponse>): Promise
   }
 });
 
+// Chat completion (non-streaming)
+router.post('/chat', async (req: Request, res: Response<ApiResponse>): Promise<void> => {
+  try {
+    const data = await ollamaService.generateChatResponse(req.body);
+    res.json({ success: true, data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Chat completion (streaming)
+router.post('/chat/stream', async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    await ollamaService.generateChatStreamResponse(
+      req.body,
+      (chunk) => {
+        res.write(`data: ${JSON.stringify(chunk)}\n\n`);
+      },
+      (error) => {
+        res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+        res.end();
+      },
+      () => {
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
+    );
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Check if blob exists
+router.head('/blobs/:digest', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { digest } = req.params;
+    const exists = await ollamaService.checkBlobExists(digest);
+    
+    if (exists) {
+      res.status(200).end();
+    } else {
+      res.status(404).end();
+    }
+  } catch (error: any) {
+    res.status(500).end();
+  }
+});
+
+// Push a blob
+router.post('/blobs/:digest', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { digest } = req.params;
+    
+    // Handle raw binary data
+    const chunks: Buffer[] = [];
+    req.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+    
+    req.on('end', async () => {
+      try {
+        const data = Buffer.concat(chunks);
+        await ollamaService.pushBlob(digest, data);
+        res.status(201).json({ success: true, message: 'Blob created successfully' });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Legacy embeddings endpoint (deprecated)
+router.post('/embeddings', async (req: Request, res: Response<ApiResponse>): Promise<void> => {
+  try {
+    const data = await ollamaService.generateLegacyEmbeddings(req.body);
+    res.json({ success: true, data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;

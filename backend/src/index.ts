@@ -79,9 +79,9 @@ wss.on('connection', (ws, req) => {
       const message = JSON.parse(data.toString());
       
       if (message.type === 'chat_stream') {
-        const { sessionId, content, options, assistantMessageId } = message.data;
+        const { sessionId, content, images, format, options, assistantMessageId } = message.data;
         
-        console.log('Backend: Received chat_stream for session:', sessionId);
+        console.log('Backend: Received chat_stream for session:', sessionId, 'with images:', !!images, 'format:', !!format);
         
         // Get session
         const session = chatService.getSession(sessionId);
@@ -94,10 +94,11 @@ wss.on('connection', (ws, req) => {
           return;
         }
 
-        // Add user message
+        // Add user message with images if provided
         const userMessage = chatService.addMessage(sessionId, {
           role: 'user',
           content,
+          images: images || undefined,
         });
 
         if (!userMessage) {
@@ -114,34 +115,40 @@ wss.on('connection', (ws, req) => {
           data: userMessage
         }));
 
-        // Prepare context
+        // Use the modern chat completion API instead of legacy generate API
+        // This supports multimodal input and structured outputs
         const contextMessages = chatService.getMessagesForContext(sessionId);
-        const prompt = contextMessages
-          .map(msg => {
-            if (msg.role === 'system') {
-              return `System: ${msg.content}`;
-            } else if (msg.role === 'user') {
-              return `User: ${msg.content}`;
-            } else {
-              return `Assistant: ${msg.content}`;
-            }
-          })
-          .join('\n') + '\nAssistant:';
+        
+        // Convert our messages to Ollama format
+        const ollamaMessages = contextMessages.map(msg => ({
+          role: msg.role,
+          content: msg.content,
+          images: msg.images || undefined
+        }));
 
         let assistantContent = '';
         
         console.log('Backend: Using assistantMessageId:', assistantMessageId);
 
-        // Stream response from Ollama
-        await ollamaService.generateStreamResponse(
-          {
-            model: session.model,
-            prompt,
-            options,
-          },
+        // Create chat request with advanced features
+        const chatRequest: any = {
+          model: session.model,
+          messages: ollamaMessages,
+          stream: true,
+          options: options || {}
+        };
+
+        // Add structured output format if specified
+        if (format) {
+          chatRequest.format = format;
+        }
+
+        // Stream response from Ollama using chat completion
+        await ollamaService.generateChatStreamResponse(
+          chatRequest,
           (chunk) => {
-            if (chunk.response) {
-              assistantContent += chunk.response;
+            if (chunk.message?.content) {
+              assistantContent += chunk.message.content;
               
               console.log('Backend: Sending chunk, total length:', assistantContent.length);
               
@@ -149,7 +156,7 @@ wss.on('connection', (ws, req) => {
               ws.send(JSON.stringify({
                 type: 'assistant_chunk',
                 data: {
-                  content: chunk.response,
+                  content: chunk.message.content,
                   total: assistantContent,
                   done: chunk.done,
                   messageId: assistantMessageId

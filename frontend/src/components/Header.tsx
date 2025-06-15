@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Settings, Menu } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -15,9 +16,20 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   className,
 }) => {
+  const location = useLocation();
   const { currentSession, models, updateCurrentSessionModel } = useChatStore();
   const { hasSeenSettingsNotification, markSettingsNotificationAsSeen, sidebarOpen, toggleSidebar } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/models':
+        return 'Model Management';
+      case '/chat':
+      default:
+        return currentSession ? currentSession.title : 'Chat';
+    }
+  };
 
   const handleModelChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newModel = event.target.value;
@@ -54,20 +66,20 @@ export const Header: React.FC<HeaderProps> = ({
               variant="ghost"
               size="sm"
               onClick={toggleSidebar}
-              className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200 lg:hidden"
-              title="Open sidebar"
+              className="lg:hidden h-10 w-10 p-0"
             >
-              <Menu className="h-4 w-4" />
+              <Menu className="h-5 w-5" />
             </Button>
           )}
-          
+
+          {/* Page title and session info */}
           <div className="flex items-center gap-3">
             <Logo size="sm" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight truncate">
-                {currentSession?.title || 'Libre WebUI'}
+                {getPageTitle()}
               </h1>
-              {currentSession && models.length > 0 && (
+              {location.pathname === '/chat' && currentSession && models.length > 0 && (
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs text-gray-500 dark:text-dark-500 hidden sm:inline">Model:</span>
                   <Select
@@ -93,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
               variant="ghost"
               size="sm"
               className="h-8 w-8 sm:h-9 sm:w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
-              title="Settings - New beta features available!"
+              title="Settings"
               onClick={handleSettingsClick}
             >
               <Settings className="h-4 w-4" />
@@ -106,9 +118,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </header>
 
-      <SettingsModal 
-        isOpen={settingsOpen} 
-        onClose={() => setSettingsOpen(false)} 
+      <SettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
       />
     </>
   );

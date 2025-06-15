@@ -4,6 +4,7 @@ export interface ChatMessage {
   content: string;
   timestamp: number;
   model?: string;
+  images?: string[]; // Base64 encoded images for multimodal support
 }
 
 export interface ChatSession {

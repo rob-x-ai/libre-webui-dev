@@ -97,7 +97,7 @@ export const useChat = (sessionId: string) => {
 
   }, [sessionId, updateMessage, setIsGenerating]);
 
-  const sendMessage = useCallback(async (content: string) => {
+  const sendMessage = useCallback(async (content: string, images?: string[], format?: string | Record<string, any>) => {
     if (!sessionId || !content.trim()) return;
 
     try {
@@ -109,6 +109,7 @@ export const useChat = (sessionId: string) => {
       addMessage(sessionId, {
         role: 'user',
         content: content.trim(),
+        images: images, // Store images in the message if provided
       });
 
       // Create placeholder for assistant message
@@ -128,12 +129,14 @@ export const useChat = (sessionId: string) => {
         await websocketService.connect();
       }
 
-      // Send chat stream request
+      // Send chat stream request with new parameters
       websocketService.send({
         type: 'chat_stream',
         data: {
           sessionId,
           content: content.trim(),
+          images: images,
+          format: format,
           options: preferences.generationOptions,
           assistantMessageId, // Send the message ID to backend
         },

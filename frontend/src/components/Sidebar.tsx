@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Plus, MessageSquare, Trash2, Edit3, Check, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Plus, MessageSquare, Trash2, Edit3, Check, X, Settings, Database } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { Logo } from '@/components/Logo';
+import { SettingsModal } from '@/components/SettingsModal';
 import { useChatStore } from '@/store/chatStore';
 import { ChatSession } from '@/types';
 import { formatTimestamp, truncateText, cn } from '@/utils';
@@ -17,6 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onClose,
   className,
 }) => {
+  const location = useLocation();
   const {
     sessions,
     currentSession,
@@ -30,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleCreateSession = async () => {
     if (!selectedModel) return;
@@ -155,9 +159,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </div>
 
+          {/* Navigation Menu */}
+          <div className="px-4 py-2 border-b border-gray-200 dark:border-dark-200">
+            <nav className="space-y-1">
+              <Link
+                to="/chat"
+                onClick={() => window.innerWidth < 768 && onClose()}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  location.pathname === '/chat' || location.pathname === '/'
+                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                )}
+              >
+                <MessageSquare className="h-4 w-4" />
+                Chat
+              </Link>
+              
+              <Link
+                to="/models"
+                onClick={() => window.innerWidth < 768 && onClose()}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  location.pathname === '/models'
+                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                )}
+              >
+                <Database className="h-4 w-4" />
+                Models
+              </Link>
+              
+              <button
+                onClick={() => {
+                  setSettingsOpen(true);
+                  if (window.innerWidth < 768) {
+                    onClose();
+                  }
+                }}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200 w-full text-left"
+              >
+                <Settings className="h-4 w-4" />
+                Settings
+              </button>
+            </nav>
+          </div>
+
           {/* Sessions list */}
           <div className="flex-1 overflow-y-auto scrollbar-thin">
             <div className="p-3 sm:p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Chat Sessions
+                </h3>
+                {sessions.length > 0 && (
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {sessions.length}
+                  </span>
+                )}
+              </div>
               {sessions.length === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-dark-600">
                   <MessageSquare className="h-8 w-8 mx-auto mb-3 opacity-50" />
@@ -272,6 +332,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </div>
+
+      <SettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </>
   );
 };

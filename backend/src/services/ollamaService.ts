@@ -201,6 +201,109 @@ class OllamaService {
       throw new Error(error.response?.data?.error || 'Failed to get Ollama version');
     }
   }
+
+  // Chat completion methods
+  async generateChatResponse(request: any): Promise<any> {
+    try {
+      const response = await this.client.post('/api/chat', {
+        ...request,
+        stream: false,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to generate chat response:', error);
+      throw new Error(error.response?.data?.error || 'Failed to generate chat response');
+    }
+  }
+
+  async generateChatStreamResponse(
+    request: any,
+    onChunk: (chunk: any) => void,
+    onError: (error: Error) => void,
+    onComplete: () => void
+  ): Promise<void> {
+    try {
+      const response = await this.client.post('/api/chat', {
+        ...request,
+        stream: true,
+      }, {
+        responseType: 'stream',
+      });
+
+      let buffer = '';
+
+      response.data.on('data', (chunk: Buffer) => {
+        buffer += chunk.toString();
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.trim()) {
+            try {
+              const data = JSON.parse(line);
+              onChunk(data);
+              if (data.done) {
+                onComplete();
+                return;
+              }
+            } catch (parseError) {
+              console.error('Failed to parse chunk:', parseError);
+            }
+          }
+        }
+      });
+
+      response.data.on('error', (error: Error) => {
+        onError(error);
+      });
+
+      response.data.on('end', () => {
+        onComplete();
+      });
+
+    } catch (error: any) {
+      console.error('Failed to generate chat stream response:', error);
+      onError(new Error(error.response?.data?.error || 'Failed to generate chat stream response'));
+    }
+  }
+
+  // Blob management methods
+  async checkBlobExists(digest: string): Promise<boolean> {
+    try {
+      const response = await this.client.head(`/api/blobs/${digest}`);
+      return response.status === 200;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return false;
+      }
+      console.error('Failed to check blob:', error);
+      throw new Error(error.response?.data?.error || 'Failed to check blob existence');
+    }
+  }
+
+  async pushBlob(digest: string, data: Buffer | string): Promise<void> {
+    try {
+      await this.client.post(`/api/blobs/${digest}`, data, {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+      });
+    } catch (error: any) {
+      console.error('Failed to push blob:', error);
+      throw new Error(error.response?.data?.error || 'Failed to push blob');
+    }
+  }
+
+  // Legacy embeddings endpoint (deprecated but still supported)
+  async generateLegacyEmbeddings(payload: any): Promise<any> {
+    try {
+      const response = await this.client.post('/api/embeddings', payload);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to generate legacy embeddings:', error);
+      throw new Error(error.response?.data?.error || 'Failed to generate legacy embeddings');
+    }
+  }
 }
 
 export default new OllamaService();

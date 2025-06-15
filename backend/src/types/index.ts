@@ -4,6 +4,7 @@ export interface ChatMessage {
   content: string;
   timestamp: number;
   model?: string;
+  images?: string[]; // Base64 encoded images for multimodal support
 }
 
 export interface ChatSession {
@@ -19,6 +20,49 @@ export interface UserPreferences {
   defaultModel: string;
   theme: 'light' | 'dark';
   systemMessage: string;
+}
+
+// Ollama Chat Message format
+export interface OllamaChatMessage {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content: string;
+  thinking?: string;
+  images?: string[];
+  tool_calls?: any[];
+}
+
+export interface OllamaChatRequest {
+  model: string;
+  messages: OllamaChatMessage[];
+  tools?: any[];
+  think?: boolean;
+  format?: string | Record<string, any>;
+  options?: Record<string, any>;
+  stream?: boolean;
+  keep_alive?: string;
+}
+
+export interface OllamaChatResponse {
+  model: string;
+  created_at: string;
+  message: {
+    role: string;
+    content: string;
+    images?: string[] | null;
+    tool_calls?: any[];
+  };
+  done: boolean;
+  done_reason?: string;
+  total_duration?: number;
+  load_duration?: number;
+  prompt_eval_count?: number;
+  prompt_eval_duration?: number;
+  eval_count?: number;
+  eval_duration?: number;
+}
+
+export interface OllamaBlobRequest {
+  digest: string;
 }
 
 export interface OllamaModel {
@@ -109,4 +153,15 @@ export interface ApiResponse<T = any> {
   data?: T;
   error?: string;
   message?: string;
+}
+
+export interface OllamaLegacyEmbeddingsRequest {
+  model: string;
+  prompt: string;
+  options?: Record<string, any>;
+  keep_alive?: string;
+}
+
+export interface OllamaLegacyEmbeddingsResponse {
+  embedding: number[];
 }

@@ -19,6 +19,7 @@
   },
   "overrides": {
     "prismjs": "^1.30.0",
+    "brace-expansion": "2.0.2",
     "refractor": {
       "prismjs": "^1.30.0"
     },

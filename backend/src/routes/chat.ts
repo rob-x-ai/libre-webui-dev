@@ -193,4 +193,192 @@ router.post('/sessions/:sessionId/messages', async (req: Request, res: Response<
   }
 });
 
+// Generate a chat response
+router.post('/sessions/:sessionId/generate', async (req: Request, res: Response<ApiResponse<ChatMessage>>): Promise<void> => {
+  try {
+    const { sessionId } = req.params;
+    const { message, options = {}, stream = false } = req.body;
+
+    if (!message) {
+      res.status(400).json({
+        success: false,
+        error: 'Message is required',
+      });
+      return;
+    }
+
+    const session = chatService.getSession(sessionId);
+    if (!session) {
+      res.status(404).json({
+        success: false,
+        error: 'Session not found',
+      });
+      return;
+    }
+
+    // Add user message to session
+    const userMessage = chatService.addMessage(sessionId, {
+      role: 'user',
+      content: message,
+    });
+
+    if (!userMessage) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to add user message',
+      });
+      return;
+    }
+
+    // Convert chat messages to Ollama format
+    const ollamaMessages = session.messages.map((msg: ChatMessage) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    // Add the new user message
+    ollamaMessages.push({
+      role: 'user',
+      content: message,
+    });
+
+    const chatRequest = {
+      model: session.model,
+      messages: ollamaMessages,
+      stream: false,
+      ...options,
+    };
+
+    // Generate response using Ollama
+    const response = await ollamaService.generateChatResponse(chatRequest);
+    
+    // Add assistant response to session
+    const assistantMessage = chatService.addMessage(sessionId, {
+      role: 'assistant',
+      content: response.message.content,
+      model: session.model,
+    });
+
+    if (!assistantMessage) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to add assistant message',
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: assistantMessage,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// Generate a chat response with streaming
+router.post('/sessions/:sessionId/generate/stream', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { sessionId } = req.params;
+    const { message, options = {} } = req.body;
+
+    if (!message) {
+      res.status(400).json({
+        success: false,
+        error: 'Message is required',
+      });
+      return;
+    }
+
+    const session = chatService.getSession(sessionId);
+    if (!session) {
+      res.status(404).json({
+        success: false,
+        error: 'Session not found',
+      });
+      return;
+    }
+
+    // Set up SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Add user message to session
+    const userMessage = chatService.addMessage(sessionId, {
+      role: 'user',
+      content: message,
+    });
+
+    if (!userMessage) {
+      res.write(`data: ${JSON.stringify({ error: 'Failed to add user message' })}\n\n`);
+      res.end();
+      return;
+    }
+
+    // Convert chat messages to Ollama format
+    const ollamaMessages = session.messages.map((msg: ChatMessage) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    // Add the new user message
+    ollamaMessages.push({
+      role: 'user',
+      content: message,
+    });
+
+    const chatRequest = {
+      model: session.model,
+      messages: ollamaMessages,
+      stream: true,
+      ...options,
+    };
+
+    let fullResponse = '';
+
+    // Generate streaming response using Ollama
+    await ollamaService.generateChatStreamResponse(
+      chatRequest,
+      (chunk) => {
+        // Send chunk to client
+        res.write(`data: ${JSON.stringify({
+          type: 'chunk',
+          content: chunk.message?.content || '',
+          done: chunk.done,
+        })}\n\n`);
+
+        // Accumulate response content
+        if (chunk.message?.content) {
+          fullResponse += chunk.message.content;
+        }
+      },
+      (error) => {
+        res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
+        res.end();
+      },
+      () => {
+        // Add complete assistant response to session
+        if (fullResponse) {
+          chatService.addMessage(sessionId, {
+            role: 'assistant',
+            content: fullResponse,
+            model: session.model,
+          });
+        }
+
+        res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+        res.end();
+      }
+    );
+  } catch (error: any) {
+    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
+    res.end();
+  }
+});
+
 export default router;

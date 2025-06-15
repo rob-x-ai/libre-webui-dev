@@ -58,6 +58,91 @@ export const chatApi = {
 
   saveMessage: (sessionId: string, message: Omit<ChatMessage, 'timestamp'> & { timestamp?: number }): Promise<ApiResponse<ChatMessage>> =>
     api.post(`/chat/sessions/${sessionId}/messages`, message).then(res => res.data),
+
+  // Chat generation using new Ollama chat API
+  generateChatResponse: (sessionId: string, message: string, options?: any): Promise<ApiResponse<ChatMessage>> =>
+    api.post(`/chat/sessions/${sessionId}/generate`, { message, options }).then(res => res.data),
+
+  // Streaming chat generation
+  generateChatStreamResponse: (sessionId: string, message: string, options?: any) => {
+    return {
+      subscribe: async (onMessage: (data: any) => void, onError?: (error: any) => void, onComplete?: () => void) => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/chat/sessions/${sessionId}/generate/stream`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message, options }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error('No response body reader available');
+          }
+
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          const processChunk = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                onComplete?.();
+                return;
+              }
+
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split('\n');
+              buffer = lines.pop() || '';
+
+              for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('data: ')) {
+                  const data = trimmedLine.slice(6);
+                  
+                  if (data === '[DONE]') {
+                    onComplete?.();
+                    return;
+                  }
+
+                  try {
+                    const parsedData = JSON.parse(data);
+                    onMessage(parsedData);
+                    
+                    if (parsedData.type === 'done' || parsedData.type === 'error') {
+                      if (parsedData.type === 'error') {
+                        onError?.(parsedData.error);
+                      } else {
+                        onComplete?.();
+                      }
+                      return;
+                    }
+                  } catch (parseError) {
+                    console.error('Failed to parse SSE data:', parseError);
+                  }
+                }
+              }
+
+              processChunk();
+            }).catch((error) => {
+              onError?.(error);
+            });
+          };
+
+          processChunk();
+          
+          return () => reader.cancel();
+        } catch (error) {
+          onError?.(error);
+          return () => {};
+        }
+      }
+    };
+  },
 };
 
 export const ollamaApi = {
@@ -95,6 +180,23 @@ export const ollamaApi = {
 
   getVersion: (): Promise<ApiResponse<{ version: string }>> =>
     api.get('/ollama/version').then(res => res.data),
+
+  // Chat completion
+  chatCompletion: (payload: any): Promise<ApiResponse<any>> =>
+    api.post('/ollama/chat', payload).then(res => res.data),
+
+  // Blob management
+  checkBlobExists: (digest: string): Promise<boolean> =>
+    api.head(`/ollama/blobs/${digest}`).then(() => true).catch(() => false),
+
+  pushBlob: (digest: string, data: Blob | Buffer): Promise<ApiResponse> =>
+    api.post(`/ollama/blobs/${digest}`, data, {
+      headers: { 'Content-Type': 'application/octet-stream' }
+    }).then(res => res.data),
+
+  // Legacy embeddings (deprecated)
+  generateLegacyEmbeddings: (payload: any): Promise<ApiResponse<any>> =>
+    api.post('/ollama/embeddings', payload).then(res => res.data),
 };
 
 export const preferencesApi = {

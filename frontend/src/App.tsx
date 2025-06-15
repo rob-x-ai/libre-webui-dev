@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { SidebarToggle } from '@/components/SidebarToggle';
-import { ChatPage } from '@/pages';
+import { ChatPage, ModelsPage } from '@/pages';
 import { useAppStore } from '@/store/appStore';
 import { useInitializeApp } from '@/hooks/useInitializeApp';
 import { cn } from '@/utils';
@@ -46,7 +46,12 @@ const App: React.FC = () => {
         >
           <Header />
           <main className="flex-1 overflow-hidden bg-white dark:bg-dark-50">
-            <ChatPage />
+            <Routes>
+              <Route path="/" element={<ChatPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat/:sessionId" element={<ChatPage />} />
+              <Route path="/models" element={<ModelsPage />} />
+            </Routes>
           </main>
         </div>
       </div>
