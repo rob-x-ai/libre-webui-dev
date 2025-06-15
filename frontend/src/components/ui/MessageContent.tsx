@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight, oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { OptimizedSyntaxHighlighter } from '@/components/OptimizedSyntaxHighlighter';
 import { Copy, Check } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { cn } from '@/utils';
@@ -56,20 +55,13 @@ export const MessageContent: React.FC<MessageContentProps> = ({
                     </button>
                   </div>
                   <div className="overflow-x-auto">
-                    <SyntaxHighlighter
-                      style={theme.mode === 'dark' ? oneDark as any : oneLight as any}
+                    <OptimizedSyntaxHighlighter
                       language={match[1]}
-                      PreTag="div"
+                      isDark={theme.mode === 'dark'}
                       className="!m-0 !rounded-none !border-none"
-                      customStyle={{
-                        padding: '1rem',
-                        background: 'transparent',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.5',
-                      }}
                     >
                       {codeString}
-                    </SyntaxHighlighter>
+                    </OptimizedSyntaxHighlighter>
                   </div>
                 </div>
               );

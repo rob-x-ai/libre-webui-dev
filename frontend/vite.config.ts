@@ -25,6 +25,50 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps for production
+    minify: 'esbuild',
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom'],
+          'ui-vendor': ['lucide-react', 'react-hot-toast'],
+          'markdown-vendor': ['react-markdown', 'react-syntax-highlighter'],
+          'utils-vendor': ['axios', 'zustand', 'clsx', 'tailwind-merge'],
+        },
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId
+          if (facadeModuleId && facadeModuleId.includes('node_modules')) {
+            return 'vendor/[name]-[hash].js'
+          }
+          return 'js/[name]-[hash].js'
+        },
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'css/[name]-[hash][extname]'
+          }
+          return 'assets/[name]-[hash][extname]'
+        },
+      },
+    },
+    // Performance optimizations
+    chunkSizeWarningLimit: 1000,
+  },
+  // Dependency optimization
+  optimizeDeps: {
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      'zustand',
+      'axios',
+      'react-hot-toast',
+      'lucide-react',
+      'clsx',
+      'tailwind-merge',
+      'react-syntax-highlighter' // Include this since we use it in OptimizedSyntaxHighlighter
+    ],
   },
 })

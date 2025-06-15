@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Header } from '@/components/Header';
@@ -6,12 +6,22 @@ import { Sidebar } from '@/components/Sidebar';
 import { SidebarToggle } from '@/components/SidebarToggle';
 import { KeyboardShortcutsModal, KeyboardShortcutsIndicator } from '@/components/KeyboardShortcuts';
 import { SettingsModal } from '@/components/SettingsModal';
-import { ChatPage, ModelsPage } from '@/pages';
 import { useAppStore } from '@/store/appStore';
 import { useInitializeApp } from '@/hooks/useInitializeApp';
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts';
 import { cn } from '@/utils';
 import websocketService from '@/utils/websocket';
+
+// Lazy load pages for code splitting
+const ChatPage = React.lazy(() => import('@/pages/ChatPage'));
+const ModelsPage = React.lazy(() => import('@/pages/ModelsPage'));
+
+// Loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-gray-600 dark:text-dark-600">Loading...</div>
+  </div>
+);
 
 const App: React.FC = () => {
   const { sidebarOpen, setSidebarOpen, toggleSidebar, toggleTheme } = useAppStore();
@@ -91,12 +101,14 @@ const App: React.FC = () => {
             onSettingsClick={() => setSettingsOpen(true)} 
           />
           <main className="flex-1 overflow-hidden bg-white dark:bg-dark-50">
-            <Routes>
-              <Route path="/" element={<ChatPage />} />
-              <Route path="/chat" element={<ChatPage />} />
-              <Route path="/chat/:sessionId" element={<ChatPage />} />
-              <Route path="/models" element={<ModelsPage />} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<ChatPage />} />
+                <Route path="/chat" element={<ChatPage />} />
+                <Route path="/chat/:sessionId" element={<ChatPage />} />
+                <Route path="/models" element={<ModelsPage />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       </div>
