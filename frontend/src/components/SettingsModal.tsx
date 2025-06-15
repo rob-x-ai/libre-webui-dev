@@ -220,7 +220,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <Cpu className="h-3 w-3 text-blue-500" />
+                    <Cpu className="h-3 w-3 text-gray-500 dark:text-dark-500" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Models
                     </span>
@@ -440,11 +440,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </label>
                   <div className="bg-gray-50 dark:bg-dark-50 border border-gray-200 dark:border-dark-300 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="h-2 w-2 bg-primary-500 rounded-full"></div>
+                      <div className="h-2 w-2 bg-gray-400 dark:bg-dark-500 rounded-full"></div>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Advanced Configuration
                       </p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-dark-200 text-gray-700 dark:text-dark-600">
                         Coming Soon
                       </span>
                     </div>
