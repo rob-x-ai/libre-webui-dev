@@ -29,9 +29,9 @@
 }
 
 .dark {
-  --toast-bg: theme('colors.gray.800');
-  --toast-color: theme('colors.gray.100');
-  --toast-border: theme('colors.gray.700');
+  --toast-bg: theme('colors.dark.100');
+  --toast-color: theme('colors.dark.800');
+  --toast-border: theme('colors.dark.300');
   
   --scrollbar-track: theme('colors.gray.800');
   --scrollbar-thumb: theme('colors.gray.600');

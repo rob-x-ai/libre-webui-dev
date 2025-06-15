@@ -47,8 +47,8 @@ export const ChatPage: React.FC = () => {
                 className="text-left"
               />
               {selectedModel && (
-                <div className="p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl">
-                  <p className="text-sm text-primary-700 dark:text-primary-300">
+                <div className="p-4 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-xl">
+                  <p className="text-sm text-gray-700 dark:text-dark-700">
                     Click "New Chat" in the sidebar to begin your conversation
                   </p>
                 </div>
@@ -56,11 +56,11 @@ export const ChatPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="p-6 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-xl">
-                <p className="text-sm text-warning-700 dark:text-warning-300 mb-4">
+              <div className="p-6 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-xl">
+                <p className="text-sm text-gray-700 dark:text-dark-700 mb-4">
                   No models available. Make sure Ollama is running and has models installed.
                 </p>
-                <code className="block text-xs bg-warning-100 dark:bg-warning-900/40 p-3 rounded-lg font-mono">
+                <code className="block text-xs bg-gray-100 dark:bg-dark-200 p-3 rounded-lg font-mono text-gray-800 dark:text-dark-600">
                   ollama pull llama3.2:3b
                 </code>
               </div>

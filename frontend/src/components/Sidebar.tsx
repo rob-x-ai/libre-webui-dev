@@ -143,16 +143,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             
             {/* Model status indicator */}
             {models.length === 0 && (
-              <div className="mt-3 p-3 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-xl">
-                <p className="text-xs text-warning-700 dark:text-warning-300">
+              <div className="mt-3 p-3 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-xl">
+                <p className="text-xs text-gray-700 dark:text-dark-700">
                   No models available. Please ensure Ollama is running and models are installed.
                 </p>
               </div>
             )}
             
             {selectedModel && (
-              <div className="mt-3 p-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl">
-                <p className="text-xs text-primary-700 dark:text-primary-300">
+              <div className="mt-3 p-3 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-xl">
+                <p className="text-xs text-gray-700 dark:text-dark-700">
                   Using model: <span className="font-medium">{selectedModel}</span>
                 </p>
               </div>
