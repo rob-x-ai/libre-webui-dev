@@ -9,7 +9,7 @@ export const ModelsPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Model Management
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-700 dark:text-gray-300">
             Manage your Ollama models, download new ones, and monitor system resources.
           </p>
         </div>

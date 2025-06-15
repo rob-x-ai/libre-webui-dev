@@ -30,7 +30,7 @@ export const Input: React.FC<InputProps> = ({
       <input
         id={inputId}
         className={cn(
-          'block w-full rounded-xl border border-gray-200 px-4 py-3 text-sm placeholder-gray-500 shadow-sm transition-all duration-200',
+          'block w-full rounded-xl border border-gray-200 px-4 py-3 text-sm placeholder-gray-500 shadow-sm transition-all duration-200 bg-white text-gray-900',
           'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none focus:shadow-md',
           'dark:border-dark-300 dark:bg-dark-100 dark:text-dark-800 dark:placeholder-dark-500',
           'dark:focus:border-primary-400 dark:focus:ring-primary-400/20',

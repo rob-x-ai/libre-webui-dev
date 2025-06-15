@@ -104,16 +104,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           
           <div className="flex flex-col items-center text-center">
             <Upload className="h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" />
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
               Drop images here or{' '}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="text-primary-600 dark:text-primary-400 hover:underline"
+                className="text-primary-600 dark:text-primary-400 hover:underline font-medium"
               >
                 browse
               </button>
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Supports: JPG, PNG, GIF, WebP (max 10MB each)
             </p>
           </div>

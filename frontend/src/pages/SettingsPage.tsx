@@ -116,7 +116,7 @@ export const SettingsPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Settings
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-700 dark:text-gray-300">
             Configure your Libre WebUI preferences and manage your data.
           </p>
         </div>
@@ -329,7 +329,7 @@ export const SettingsPage: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
               About Libre WebUI
             </h3>
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <p>
                 <strong>Privacy First:</strong> All your data stays on your machine. No telemetry, no tracking.
               </p>

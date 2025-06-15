@@ -137,7 +137,7 @@ export const StructuredOutput: React.FC<StructuredOutputProps> = ({
             Schema Preview
           </span>
         </div>
-        <pre className="text-xs text-gray-600 dark:text-gray-400 overflow-x-auto">
+        <pre className="text-xs text-gray-700 dark:text-gray-300 overflow-x-auto">
           {JSON.stringify(current.value, null, 2)}
         </pre>
       </div>

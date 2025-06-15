@@ -369,7 +369,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <div className="bg-gray-50 dark:bg-dark-50 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Name:</span>
                           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate ml-2">
                             {selectedModel}
                           </span>
@@ -380,19 +380,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             return (
                               <>
                                 <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Size:</span>
+                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Size:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.parameter_size}
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Family:</span>
+                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Family:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.family}
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Format:</span>
+                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Format:</span>
                                   <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                     {model.details.format}
                                   </span>
@@ -450,15 +450,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </div>
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-600 dark:text-gray-400 font-medium">Temperature:</span>
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">Temperature:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">0.7</span>
                       </div>
                       <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-600 dark:text-gray-400 font-medium">Top P:</span>
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">Top P:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">0.9</span>
                       </div>
                       <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-600 dark:text-gray-400 font-medium">Max Tokens:</span>
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">Max Tokens:</span>
                         <span className="text-gray-900 dark:text-gray-100 font-semibold">2048</span>
                       </div>
                     </div>
@@ -524,7 +524,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     About Libre WebUI
                   </h4>
                   <div className="bg-gray-50 dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
-                    <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                       <p>
                         <strong>Privacy First:</strong> All your data stays on your machine. No telemetry, no tracking.
                       </p>
