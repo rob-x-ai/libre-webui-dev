@@ -32,6 +32,37 @@ npm run dev
 - Backend: http://localhost:3001
 - Ollama: http://localhost:11434
 
+## Keyboard Shortcuts
+
+Libre WebUI includes VS Code-inspired keyboard shortcuts for enhanced productivity:
+
+### Navigation
+- **⌘B** (Cmd+B / Ctrl+B) - Toggle sidebar visibility
+- **⌘D** (Cmd+D / Ctrl+D) - Toggle dark/light theme
+
+### Settings & Help
+- **⌘,** (Cmd+Comma / Ctrl+Comma) - Open settings modal
+- **?** - Show keyboard shortcuts help modal
+- **Esc** - Close open modals
+
+### Chat
+- **Enter** - Send message
+- **Shift+Enter** - New line in message
+
+Press **?** anywhere in the app to see the complete shortcuts reference.
+
+## Deployment
+
+### Vercel
+The app includes Vercel configuration for seamless deployment with SPA routing support:
+
+```bash
+# Deploy to Vercel
+vercel --prod
+```
+
+The configuration automatically handles client-side routing for the `/models` page and other routes.
+
 ## Configuration
 
 The app automatically generates configuration files on first run:
@@ -45,11 +76,13 @@ These files are automatically created with sensible defaults and are excluded fr
 
 ### 🚀 Core Features
 - **Clean, minimal interface** - Rick Rubin-inspired simplicity
-- **Light/Dark mode** - Comfortable viewing in any environment
+- **Light/Dark mode** - Comfortable viewing in any environment with improved accessibility
 - **Responsive design** - Works seamlessly on desktop, tablet, and mobile
 - **Real-time chat** - Streaming responses with WebSocket integration
 - **Fully private** - Offline inference on your own hardware
 - **Zero telemetry** - No tracking, no data collection
+- **Keyboard shortcuts** - VS Code-like shortcuts for power users (⌘B, ⌘D, ⌘,, ?)
+- **Performance optimized** - Code splitting and lazy loading for faster page loads
 
 ### 🤖 Complete Ollama Integration
 
@@ -81,9 +114,11 @@ All Ollama API endpoints are integrated and ready to use:
 
 ### 🎯 UI Components
 - **Model Manager** - Comprehensive model management interface
-- **Chat Interface** - Intuitive conversation experience
+- **Chat Interface** - Intuitive conversation experience with syntax highlighting
 - **Settings Panel** - Customizable preferences and options
-- **Theme Toggle** - Seamless light/dark mode switching
+- **Theme Toggle** - Seamless light/dark mode switching with keyboard shortcut (⌘D)
+- **Keyboard Shortcuts Modal** - Quick access help for all shortcuts (press ?)
+- **Optimized Bundle** - Code splitting for faster loading and better performance
 
 ### 🔧 Developer Features
 - **TypeScript** - Full type safety throughout the stack
@@ -91,6 +126,8 @@ All Ollama API endpoints are integrated and ready to use:
 - **WebSocket** - Real-time bidirectional communication
 - **Modular Architecture** - Clean separation of concerns
 - **Comprehensive Documentation** - Detailed API and integration guides
+- **Bundle Optimization** - Code splitting, lazy loading, and optimized dependencies
+- **Vercel Ready** - SPA routing configuration for seamless deployment
 
 ## Architecture
 
@@ -115,6 +152,21 @@ libre-webui-dev/
 ## API Documentation
 
 See [OLLAMA_INTEGRATION.md](./OLLAMA_INTEGRATION.md) for complete API documentation and usage examples.
+For keyboard shortcuts reference, see [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md).
+
+## Accessibility & Performance
+
+### Accessibility Features
+- **High contrast text** - Improved readability in both light and dark modes
+- **Keyboard navigation** - Full keyboard support with intuitive shortcuts
+- **Screen reader friendly** - Semantic HTML and proper ARIA labels
+- **Responsive design** - Accessible on all device sizes
+
+### Performance Optimizations
+- **Code splitting** - Lazy loading for ChatPage and ModelsPage
+- **Optimized bundles** - Vendor chunks separated for better caching
+- **Syntax highlighting** - Lightweight, optimized syntax highlighter
+- **Fast loading** - Reduced bundle sizes and improved load times
 
 Quick API examples:
 
