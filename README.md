@@ -151,8 +151,17 @@ libre-webui-dev/
 
 ## API Documentation
 
-See [OLLAMA_INTEGRATION.md](./OLLAMA_INTEGRATION.md) for complete API documentation and usage examples.
-For keyboard shortcuts reference, see [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md).
+## Documentation
+
+### 📚 Available Guides
+- **[Quick Start Guide](./docs/QUICK_START.md)** - Get up and running in minutes
+- **[Ollama Integration](./docs/OLLAMA_INTEGRATION.md)** - Complete API documentation and usage examples
+- **[Keyboard Shortcuts](./docs/KEYBOARD_SHORTCUTS.md)** - Full reference for all keyboard shortcuts
+- **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Integration Status](./docs/INTEGRATION_COMPLETE.md)** - Ollama integration completion status
+
+See [OLLAMA_INTEGRATION.md](./docs/OLLAMA_INTEGRATION.md) for complete API documentation and usage examples.
+For keyboard shortcuts reference, see [KEYBOARD_SHORTCUTS.md](./docs/KEYBOARD_SHORTCUTS.md).
 
 ## Accessibility & Performance
 
