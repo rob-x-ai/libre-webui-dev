@@ -12,7 +12,7 @@ export const ThemeToggle: React.FC = () => {
       size="sm"
       onClick={toggleTheme}
       className="h-9 w-9 p-0 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-200 transition-all duration-200 hover:scale-105 active:scale-95"
-      title={`Switch to ${theme.mode === 'light' ? 'dark' : 'light'} mode`}
+      title={`Switch to ${theme.mode === 'light' ? 'dark' : 'light'} mode (⌘D)`}
     >
       {theme.mode === 'light' ? (
         <Moon className="h-4 w-4 text-gray-600 dark:text-dark-500" />

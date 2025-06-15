@@ -27,7 +27,7 @@ export const SidebarToggle: React.FC<SidebarToggleProps> = ({ className }) => {
           : 'left-0 max-sm:hidden',  // Hide on mobile when closed
         className
       )}
-      title={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+      title={sidebarOpen ? 'Close sidebar (⌘B)' : 'Open sidebar (⌘B)'}
     >
       {sidebarOpen ? (
         <ChevronLeft className="h-4 w-4 text-gray-600 dark:text-dark-600 group-hover:text-gray-900 dark:group-hover:text-dark-800 transition-colors duration-200" />

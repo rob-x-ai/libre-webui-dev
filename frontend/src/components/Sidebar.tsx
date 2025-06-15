@@ -319,7 +319,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Footer */}
           <div className="p-4 border-t border-gray-200 dark:border-dark-200 bg-gray-25 dark:bg-dark-100">
-            <div className="text-xs text-gray-500 dark:text-dark-600 text-center space-y-1">
+            <div className="text-xs text-gray-500 dark:text-dark-600 text-center space-y-2">
               {models.length > 0 && (
                 <p>
                   Using <span className="font-medium text-gray-700 dark:text-dark-700">{selectedModel || 'No model selected'}</span>
@@ -328,6 +328,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <p>
                 {sessions.length} chat{sessions.length !== 1 ? 's' : ''} available
               </p>
+              
+              {/* Keyboard shortcuts hint */}
+              <div className="pt-2 border-t border-gray-200 dark:border-dark-300">
+                <p className="text-xs text-gray-400 dark:text-dark-500">
+                  Press <kbd className="px-1 py-0.5 text-xs font-mono bg-gray-200 dark:bg-dark-300 text-gray-600 dark:text-dark-600 rounded">⌘B</kbd> to toggle sidebar
+                </p>
+                <p className="text-xs text-gray-400 dark:text-dark-500 mt-1">
+                  Press <kbd className="px-1 py-0.5 text-xs font-mono bg-gray-200 dark:bg-dark-300 text-gray-600 dark:text-dark-600 rounded">?</kbd> or <kbd className="px-1 py-0.5 text-xs font-mono bg-gray-200 dark:bg-dark-300 text-gray-600 dark:text-dark-600 rounded">H</kbd> for shortcuts
+                </p>
+              </div>
             </div>
           </div>
         </div>

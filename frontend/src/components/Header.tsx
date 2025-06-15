@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Settings, Menu } from 'lucide-react';
 import { Button, Select } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { SettingsModal } from '@/components/SettingsModal';
 import { Logo } from '@/components/Logo';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
@@ -11,15 +10,16 @@ import { cn } from '@/utils';
 
 interface HeaderProps {
   className?: string;
+  onSettingsClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   className,
+  onSettingsClick,
 }) => {
   const location = useLocation();
   const { currentSession, models, updateCurrentSessionModel } = useChatStore();
   const { hasSeenSettingsNotification, markSettingsNotificationAsSeen, sidebarOpen, toggleSidebar } = useAppStore();
-  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -47,7 +47,10 @@ export const Header: React.FC<HeaderProps> = ({
     if (!hasSeenSettingsNotification) {
       markSettingsNotificationAsSeen();
     }
-    setSettingsOpen(true);
+    
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
   };
 
   return (
@@ -105,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
               variant="ghost"
               size="sm"
               className="h-8 w-8 sm:h-9 sm:w-9 p-0 hover:bg-gray-100 dark:hover:bg-dark-200"
-              title="Settings"
+              title="Settings (⌘,)"
               onClick={handleSettingsClick}
             >
               <Settings className="h-4 w-4" />
@@ -117,11 +120,6 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </header>
-
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      />
     </>
   );
 };
