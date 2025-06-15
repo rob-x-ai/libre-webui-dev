@@ -120,11 +120,28 @@ wss.on('connection', (ws, req) => {
         const contextMessages = chatService.getMessagesForContext(sessionId);
         
         // Convert our messages to Ollama format
-        const ollamaMessages = contextMessages.map(msg => ({
-          role: msg.role,
-          content: msg.content,
-          images: msg.images || undefined
-        }));
+        const ollamaMessages = contextMessages.map(msg => {
+          const ollamaMessage: any = {
+            role: msg.role,
+            content: msg.content,
+          };
+          
+          // Process images: strip data URL prefix if present
+          if (msg.images && msg.images.length > 0) {
+            ollamaMessage.images = msg.images.map(img => {
+              // Strip data URL prefix if present (e.g., "data:image/png;base64,")
+              if (typeof img === 'string' && img.includes(',')) {
+                const base64Index = img.indexOf(',');
+                if (base64Index !== -1) {
+                  return img.substring(base64Index + 1);
+                }
+              }
+              return img;
+            });
+          }
+          
+          return ollamaMessage;
+        });
 
         let assistantContent = '';
         
