@@ -141,6 +141,7 @@ const App: React.FC = () => {
             border: '1px solid var(--toast-border)',
             borderRadius: '0.75rem',
             boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            cursor: 'pointer',
           },
           success: {
             iconTheme: {
@@ -154,6 +155,10 @@ const App: React.FC = () => {
               secondary: '#ffffff',
             },
           },
+        }}
+        containerStyle={{
+          top: 80, // Position below header (header height + some margin)
+          right: 20,
         }}
       />
     </Router>

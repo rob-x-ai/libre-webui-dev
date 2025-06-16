@@ -38,6 +38,44 @@
   --scrollbar-thumb-hover: theme('colors.gray.500');
 }
 
+/* Toast positioning to avoid header overlap */
+[data-hot-toast] {
+  z-index: 9999 !important;
+}
+
+/* Make toasts dismissible on click with visual feedback */
+[data-hot-toast] [data-toast] {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+[data-hot-toast] [data-toast]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.15), 0 6px 8px -2px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Add a subtle close indicator */
+[data-hot-toast] [data-toast]::after {
+  content: '×';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 16px;
+  color: #9ca3af;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
+  font-weight: bold;
+}
+
+[data-hot-toast] [data-toast]:hover::after {
+  opacity: 1;
+}
+
+.dark [data-hot-toast] [data-toast]::after {
+  color: #6b7280;
+}
+
 /* Enhanced scrollbar styles */
 .scrollbar-thin {
   scrollbar-width: thin;
