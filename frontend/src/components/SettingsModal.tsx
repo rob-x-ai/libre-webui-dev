@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, User, Bot, Database, Shield, Palette, Settings, Monitor, MessageSquare, Cpu } from 'lucide-react';
+import { X, Moon, Sun, Bot, Database, Palette, Monitor, MessageSquare, Cpu, Info, Github, ExternalLink, Heart } from 'lucide-react';
 import { Button, Select, Textarea } from '@/components/ui';
 import { ModelTools } from '@/components/ModelTools';
 import { useChatStore } from '@/store/chatStore';
@@ -25,13 +25,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const { models, selectedModel, setSelectedModel, systemMessage, setSystemMessage, clearAllSessions, loading, sessions } = useChatStore();
   const { theme, setTheme, preferences, setPreferences } = useAppStore();
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState('appearance');
   const [tempSystemMessage, setTempSystemMessage] = useState(systemMessage);
   const [systemInfo, setSystemInfo] = useState<SystemInfo>({
     modelsCount: 0,
     sessionsCount: 0,
     isHealthy: false,
   });
+
+  const [easterEggClicks, setEasterEggClicks] = useState(0);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   // Load system information
   useEffect(() => {
@@ -68,6 +71,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }
     } catch (error: any) {
       toast.error('Failed to update settings: ' + error.message);
+    }
+  };
+
+  const handleEasterEgg = () => {
+    const newClicks = easterEggClicks + 1;
+    setEasterEggClicks(newClicks);
+    
+    if (newClicks === 7) {
+      setShowEasterEgg(true);
+      toast.success('🎉 You found the easter egg! The secret of simplicity is unleashed!');
+      setTimeout(() => {
+        setShowEasterEgg(false);
+        setEasterEggClicks(0);
+      }, 5000);
     }
   };
 
@@ -125,68 +142,45 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   const tabs = [
-    { id: 'general', label: 'General', icon: Settings },
-    { id: 'system', label: 'System', icon: Monitor },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'models', label: 'Models', icon: Bot },
+    { id: 'system', label: 'System', icon: Monitor },
     { id: 'data', label: 'Data', icon: Database },
-    { id: 'privacy', label: 'Privacy', icon: Shield },
-    { id: 'account', label: 'Account', icon: User },
+    { id: 'about', label: 'About', icon: Info },
   ];
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'general':
+      case 'appearance':
         return (
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                General Settings
+                Appearance
               </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Language
-                  </label>
-                  <Select
-                    value="en"
-                    onChange={() => {}}
-                    options={[
-                      { value: 'en', label: 'English' },
-                      { value: 'es', label: 'Spanish' },
-                      { value: 'fr', label: 'French' },
-                      { value: 'de', label: 'German' },
-                    ]}
-                    disabled
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    More languages coming soon
-                  </p>
-                </div>
-                <div>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                      defaultChecked={true}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Enable keyboard shortcuts
-                    </span>
-                  </label>
-                </div>
-                <div>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                      defaultChecked={false}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Show typing indicators
-                    </span>
-                  </label>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => handleThemeChange('light')}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    theme.mode === 'light'
+                      ? 'bg-primary-600 text-white shadow-sm hover:bg-primary-700 hover:shadow-md focus:ring-primary-500 dark:bg-primary-500 dark:hover:bg-primary-600 dark:focus:ring-primary-400'
+                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
+                  }`}
+                >
+                  <Sun className="h-4 w-4" />
+                  Light
+                </button>
+                <button
+                  onClick={() => handleThemeChange('dark')}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    theme.mode === 'dark'
+                      ? 'bg-dark-300 text-dark-800 border border-dark-400 shadow-sm hover:bg-dark-400 focus:ring-dark-500'
+                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
+                  }`}
+                >
+                  <Moon className="h-4 w-4" />
+                  Dark
+                </button>
               </div>
             </div>
           </div>
@@ -262,71 +256,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               >
                 Refresh Status
               </Button>
-            </div>
-          </div>
-        );
-
-      case 'appearance':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Appearance
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => handleThemeChange('light')}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                    theme.mode === 'light'
-                      ? 'bg-primary-600 text-white shadow-sm hover:bg-primary-700 hover:shadow-md focus:ring-primary-500 dark:bg-primary-500 dark:hover:bg-primary-600 dark:focus:ring-primary-400'
-                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
-                  }`}
-                >
-                  <Sun className="h-4 w-4" />
-                  Light
-                </button>
-                <button
-                  onClick={() => handleThemeChange('dark')}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                    theme.mode === 'dark'
-                      ? 'bg-dark-300 text-dark-800 border border-dark-400 shadow-sm hover:bg-dark-400 focus:ring-dark-500'
-                      : 'border border-gray-300 text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 dark:border-dark-300 dark:text-dark-700 dark:bg-dark-25 dark:hover:bg-dark-200 dark:hover:border-dark-400'
-                  }`}
-                >
-                  <Moon className="h-4 w-4" />
-                  Dark
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Chat Density
-              </label>
-              <Select
-                value="comfortable"
-                onChange={() => {}}
-                options={[
-                  { value: 'compact', label: 'Compact' },
-                  { value: 'comfortable', label: 'Comfortable' },
-                  { value: 'spacious', label: 'Spacious' },
-                ]}
-                disabled
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Coming soon
-              </p>
-            </div>
-            <div>
-              <label className="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                  defaultChecked={true}
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Enable animations
-                </span>
-              </label>
             </div>
           </div>
         );
@@ -432,38 +361,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </Button>
                   </div>
                 </div>
-
-                {/* Model Parameters */}
-                <div className="bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Model Parameters (Beta)
-                  </label>
-                  <div className="bg-gray-50 dark:bg-dark-50 border border-gray-200 dark:border-dark-300 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="h-2 w-2 bg-gray-400 dark:bg-dark-500 rounded-full"></div>
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Advanced Configuration
-                      </p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-dark-200 text-gray-700 dark:text-dark-600">
-                        Coming Soon
-                      </span>
-                    </div>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">Temperature:</span>
-                        <span className="text-gray-900 dark:text-gray-100 font-semibold">0.7</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">Top P:</span>
-                        <span className="text-gray-900 dark:text-gray-100 font-semibold">0.9</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-white dark:bg-dark-100 rounded-md border border-gray-200 dark:border-dark-300">
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">Max Tokens:</span>
-                        <span className="text-gray-900 dark:text-gray-100 font-semibold">2048</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
               
               {/* Model Tools Section */}
@@ -518,141 +415,137 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </Button>
                   </div>
                 </div>
-
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    About Libre WebUI
-                  </h4>
-                  <div className="bg-gray-50 dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300">
-                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                      <p>
-                        <strong>Privacy First:</strong> All your data stays on your machine. No telemetry, no tracking.
-                      </p>
-                      <p>
-                        <strong>Open Source:</strong> 100% free and open source software licensed under MIT.
-                      </p>
-                      <p>
-                        <strong>Local Inference:</strong> Powered by Ollama for completely offline AI inference.
-                      </p>
-                      <p className="pt-2 border-t border-gray-200 dark:border-dark-300 italic">
-                        "Like Rick Rubin strips music to its essence, Libre WebUI strips away UI complexity. Simple. Minimal. Effective."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                      defaultChecked={true}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Auto-save conversations
-                    </span>
-                  </label>
-                </div>
               </div>
             </div>
           </div>
         );
 
-      case 'privacy':
+      case 'about':
         return (
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Privacy & Security
+                About Libre WebUI
               </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                      defaultChecked={false}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Send usage analytics (helps improve the app)
-                    </span>
-                  </label>
-                </div>
-                <div>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-dark-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-400"
-                      defaultChecked={true}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Keep conversations private (local storage only)
-                    </span>
-                  </label>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Data Retention
-                  </label>
-                  <Select
-                    value="forever"
-                    onChange={() => {}}
-                    options={[
-                      { value: '7days', label: '7 days' },
-                      { value: '30days', label: '30 days' },
-                      { value: '6months', label: '6 months' },
-                      { value: 'forever', label: 'Forever' },
-                    ]}
-                    disabled
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Coming soon
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'account':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Account Settings
-              </h3>
-              <div className="space-y-4">
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-dark-100 rounded-lg p-6 border border-gray-200 dark:border-dark-300">
+                <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
                   <div className="flex items-start gap-3">
-                    <User className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                     <div>
-                      <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-                        Local User
-                      </h4>
-                      <p className="text-xs text-blue-700 dark:text-blue-300">
-                        You're using Libre WebUI in local mode. Account sync and cloud features coming soon.
-                      </p>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Privacy First</p>
+                      <p>All your data stays on your machine. No telemetry, no tracking, no cloud dependencies.</p>
                     </div>
                   </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Open Source</p>
+                      <p>100% free and open source software licensed under MIT. Community-driven development.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Local Inference</p>
+                      <p>Powered by Ollama for completely offline AI inference. No internet required once models are downloaded.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-gray-200 dark:border-dark-300">
+                    <p 
+                      className="italic text-center text-gray-600 dark:text-gray-400 cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 transition-colors select-none"
+                      onClick={handleEasterEgg}
+                      title="Click me 7 times for a surprise! 🎁"
+                    >
+                      "Like Rick Rubin strips music to its essence, Libre WebUI strips away UI complexity. Simple. Minimal. Effective."
+                    </p>
+                    {showEasterEgg && (
+                      <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-800 rounded-lg animate-pulse">
+                        <div className="flex items-center justify-center gap-2 text-purple-700 dark:text-purple-300">
+                          <Heart className="h-4 w-4 text-red-500 animate-bounce" />
+                          <span className="font-semibold">Secret unlocked!</span>
+                          <Heart className="h-4 w-4 text-red-500 animate-bounce" style={{ animationDelay: '0.1s' }} />
+                        </div>
+                        <p className="text-center text-sm text-purple-600 dark:text-purple-400 mt-2">
+                          You've discovered the hidden power of persistence! Just like in AI, sometimes the magic happens after multiple iterations. 🪄✨
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Display Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-dark-100 text-gray-900 dark:text-gray-100"
-                    placeholder="Your name"
-                    disabled
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Coming soon
-                  </p>
+              </div>
+
+              {/* Links Section */}
+              <div className="mt-6 space-y-4">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Links & Resources
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <a
+                    href="https://github.com/libre-webui/libre-webui"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 bg-white dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-400 transition-all duration-200 group"
+                  >
+                    <Github className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">GitHub Repository</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Source code & contributions</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+
+                  <a
+                    href="https://libre-webui.dev"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 bg-white dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-400 transition-all duration-200 group"
+                  >
+                    <ExternalLink className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Official Website</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Documentation & guides</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+
+                  <a
+                    href="https://ollama.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 bg-white dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-400 transition-all duration-200 group"
+                  >
+                    <Bot className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Ollama</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Local AI inference engine</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+
+                  <a
+                    href="https://github.com/libre-webui/libre-webui/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 bg-white dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-400 transition-all duration-200 group"
+                  >
+                    <MessageSquare className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Report Issues</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Bug reports & feature requests</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
                 </div>
-                <div>
-                  <Button variant="outline" size="sm" disabled>
-                    Sign In / Create Account
-                  </Button>
+              </div>
+
+              {/* Version Info */}
+              <div className="mt-6 p-4 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-300 rounded-lg">
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>Version 1.0.0</span>
+                  <span>Built with ❤️ for the open source community</span>
                 </div>
               </div>
             </div>
