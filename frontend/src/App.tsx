@@ -6,6 +6,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { SidebarToggle } from '@/components/SidebarToggle';
 import { KeyboardShortcutsModal, KeyboardShortcutsIndicator } from '@/components/KeyboardShortcuts';
 import { SettingsModal } from '@/components/SettingsModal';
+import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { useAppStore } from '@/store/appStore';
 import { useInitializeApp } from '@/hooks/useInitializeApp';
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts';
@@ -24,7 +25,7 @@ const PageLoader = () => (
 );
 
 const App: React.FC = () => {
-  const { sidebarOpen, setSidebarOpen, toggleSidebar, toggleTheme } = useAppStore();
+  const { sidebarOpen, setSidebarOpen, toggleSidebar, toggleTheme, isDemoMode, demoConfig } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
@@ -100,6 +101,14 @@ const App: React.FC = () => {
           <Header 
             onSettingsClick={() => setSettingsOpen(true)} 
           />
+          
+          {/* Demo Mode Banner */}
+          {isDemoMode && demoConfig.showBanner && (
+            <DemoModeBanner 
+              message={demoConfig.message}
+            />
+          )}
+          
           <main className="flex-1 overflow-hidden bg-white dark:bg-dark-50">
             <Suspense fallback={<PageLoader />}>
               <Routes>

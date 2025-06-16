@@ -5,6 +5,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Export demo mode utilities
+export * from './demoMode';
+
 export function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp);
   const now = new Date();

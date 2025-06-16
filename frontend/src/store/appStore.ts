@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserPreferences, Theme } from '@/types';
+import { isDemoMode, getDemoConfig } from '@/utils/demoMode';
 
 interface AppState {
   // Theme
@@ -24,6 +25,11 @@ interface AppState {
   // Settings notification
   hasSeenSettingsNotification: boolean;
   markSettingsNotificationAsSeen: () => void;
+
+  // Demo mode
+  isDemoMode: boolean;
+  demoConfig: ReturnType<typeof getDemoConfig>;
+  setDemoMode: (isDemo: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -75,6 +81,16 @@ export const useAppStore = create<AppState>()(
       // Settings notification
       hasSeenSettingsNotification: false,
       markSettingsNotificationAsSeen: () => set({ hasSeenSettingsNotification: true }),
+
+      // Demo mode
+      isDemoMode: isDemoMode(),
+      demoConfig: getDemoConfig(),
+      setDemoMode: (isDemo) => {
+        set({ 
+          isDemoMode: isDemo,
+          demoConfig: getDemoConfig()
+        });
+      },
     }),
     {
       name: 'libre-webui-app-state',
@@ -83,6 +99,7 @@ export const useAppStore = create<AppState>()(
         sidebarOpen: state.sidebarOpen,
         preferences: state.preferences,
         hasSeenSettingsNotification: state.hasSeenSettingsNotification,
+        // Note: We don't persist isDemoMode as it should be detected on each app load
       }),
     }
   )

@@ -1,4 +1,12 @@
 {
+  "env": {
+    "VITE_DEMO_MODE": "true"
+  },
+  "build": {
+    "env": {
+      "VITE_DEMO_MODE": "true"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
