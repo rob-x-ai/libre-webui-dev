@@ -859,7 +859,7 @@ export const authApi = {
           requiresAuth: true,
           singleUserMode: false,
           hasUsers: true,
-          version: '1.0.0',
+          version: '0.1.0-rc',
         },
       });
     }
@@ -887,7 +887,7 @@ export const authApi = {
           requiresAuth: true,
           singleUserMode: false,
           hasUsers: true,
-          version: '1.0.0',
+          version: '0.1.0-rc',
         },
       });
     }
@@ -909,7 +909,7 @@ export const authApi = {
         requiresAuth: true,
         singleUserMode: false,
         hasUsers: true,
-        version: '1.0.0',
+        version: '0.1.0-rc',
       });
     }
 

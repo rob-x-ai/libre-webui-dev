@@ -192,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right side */}
         <div className='flex items-center gap-1 sm:gap-2'>
-          <UserMenu />
+          <UserMenu onSettingsClick={onSettingsClick} />
 
           <ThemeToggle />
           <div className='relative'>

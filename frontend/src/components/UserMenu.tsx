@@ -23,7 +23,11 @@ import { useAuthStore } from '@/store/authStore';
 import { authApi } from '@/utils/api';
 import { User, LogOut, Settings, Shield, ChevronDown } from 'lucide-react';
 
-export const UserMenu: React.FC = () => {
+interface UserMenuProps {
+  onSettingsClick?: () => void;
+}
+
+export const UserMenu: React.FC<UserMenuProps> = ({ onSettingsClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
@@ -82,7 +86,9 @@ export const UserMenu: React.FC = () => {
   };
 
   const handleSettings = () => {
-    navigate('/settings');
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
     setIsOpen(false);
   };
 
@@ -174,7 +180,7 @@ export const UserMenu: React.FC = () => {
                 Settings
               </button>
 
-              {isAdmin() && !systemInfo?.singleUserMode && (
+              {isAdmin() && (
                 <button
                   onClick={handleUserManagement}
                   className='w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200'

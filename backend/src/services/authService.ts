@@ -17,6 +17,22 @@
 
 import jwt from 'jsonwebtoken';
 import { userModel, UserPublic } from '../models/userModel.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Read version from package.json
+let packageVersion = '0.1.0-rc';
+try {
+  const packageJsonPath = join(__dirname, '..', '..', 'package.json');
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+  packageVersion = packageJson.version;
+} catch (_error) {
+  console.warn('Could not read version from package.json, using default');
+}
 
 const JWT_SECRET =
   process.env.JWT_SECRET ||
@@ -95,7 +111,7 @@ export class AuthService {
       requiresAuth: true, // For now, always require auth
       singleUserMode: userCount === 1,
       hasUsers: userCount > 0,
-      version: '1.0.0',
+      version: packageVersion,
     };
   }
 
