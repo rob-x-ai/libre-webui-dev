@@ -16,6 +16,7 @@
  */
 
 import express, { Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import chatService from '../services/chatService.js';
 import ollamaService from '../services/ollamaService.js';
 import pluginService from '../services/pluginService.js';
@@ -35,6 +36,21 @@ import {
 } from '../types/index.js';
 
 const router = express.Router();
+
+// Rate limiter for chat routes: 60 requests per minute (reasonable for chat)
+const chatRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // limit each IP to 60 requests per minute
+  message: {
+    success: false,
+    message: 'Too many chat requests, please slow down',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiter to all chat routes
+router.use(chatRateLimiter);
 
 // Apply authentication middleware to all chat routes
 router.use(authenticate);

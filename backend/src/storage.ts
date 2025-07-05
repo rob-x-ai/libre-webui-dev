@@ -127,7 +127,7 @@ class StorageService {
     role = 'user'
   ): Promise<User> {
     const userId = uuidv4();
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 12);
     const now = Date.now();
 
     const user: User = {

@@ -16,6 +16,7 @@
  */
 
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { userModel } from '../models/userModel.js';
 import {
   authenticate,
@@ -25,11 +26,24 @@ import {
 
 const router = express.Router();
 
+// Rate limiter for user management routes: 30 requests per 15 minutes
+const userRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // limit each IP to 30 requests per 15 minutes
+  message: {
+    success: false,
+    message: 'Too many user management requests, please try again later',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 /**
  * Get all users (admin only)
  */
 router.get(
   '/',
+  userRateLimiter,
   authenticate,
   requireAdmin,
   async (req: AuthenticatedRequest, res) => {
@@ -54,6 +68,7 @@ router.get(
  */
 router.post(
   '/',
+  userRateLimiter,
   authenticate,
   requireAdmin,
   async (req: AuthenticatedRequest, res) => {
@@ -122,6 +137,7 @@ router.post(
  */
 router.patch(
   '/:id',
+  userRateLimiter,
   authenticate,
   requireAdmin,
   async (req: AuthenticatedRequest, res) => {
@@ -196,6 +212,7 @@ router.patch(
  */
 router.delete(
   '/:id',
+  userRateLimiter,
   authenticate,
   requireAdmin,
   async (req: AuthenticatedRequest, res) => {

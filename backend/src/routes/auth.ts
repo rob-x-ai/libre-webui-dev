@@ -16,15 +16,40 @@
  */
 
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { authService } from '../services/authService.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Rate limiter for authentication routes: 5 login attempts per 15 minutes
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs for auth
+  message: {
+    success: false,
+    message: 'Too many authentication attempts, please try again later',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiter for general auth routes: 100 requests per 15 minutes
+const generalAuthRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many requests, please try again later',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 /**
  * Login endpoint
  */
-router.post('/login', async (req, res) => {
+router.post('/login', authRateLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -67,53 +92,63 @@ router.post('/login', async (req, res) => {
 /**
  * Logout endpoint
  */
-router.post('/logout', authenticate, async (req: AuthenticatedRequest, res) => {
-  try {
-    // In a stateless JWT system, logout is handled client-side
-    // But we can log it for audit purposes
-    console.log(`User ${req.user?.username} logged out`);
+router.post(
+  '/logout',
+  generalAuthRateLimiter,
+  authenticate,
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      // In a stateless JWT system, logout is handled client-side
+      // But we can log it for audit purposes
+      console.log(`User ${req.user?.username} logged out`);
 
-    res.json({
-      success: true,
-      message: 'Logged out successfully',
-    });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    });
+      res.json({
+        success: true,
+        message: 'Logged out successfully',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
-});
+);
 
 /**
  * Verify token endpoint
  */
-router.get('/verify', authenticate, async (req: AuthenticatedRequest, res) => {
-  try {
-    const user = await authService.getUserFromToken(
-      req.headers.authorization!.substring(7)
-    );
-    if (!user) {
-      res.status(401).json({
-        success: false,
-        message: 'Invalid token',
-      });
-      return;
-    }
+router.get(
+  '/verify',
+  generalAuthRateLimiter,
+  authenticate,
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const user = await authService.getUserFromToken(
+        req.headers.authorization!.substring(7)
+      );
+      if (!user) {
+        res.status(401).json({
+          success: false,
+          message: 'Invalid token',
+        });
+        return;
+      }
 
-    res.json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    console.error('Token verification error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    });
+      res.json({
+        success: true,
+        data: user,
+      });
+    } catch (error) {
+      console.error('Token verification error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
-});
+);
 
 /**
  * Get system information
@@ -137,7 +172,7 @@ router.get('/system-info', async (req, res) => {
 /**
  * Signup endpoint
  */
-router.post('/signup', async (req, res) => {
+router.post('/signup', authRateLimiter, async (req, res) => {
   try {
     const { username, password, email } = req.body;
 

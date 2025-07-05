@@ -104,18 +104,22 @@ export const useInitializeApp = () => {
 
         if (!availableModelNames.includes(currentSelected)) {
           // Selected model no longer available, use first available
-          console.log(
-            '⚠️ Selected model not available, falling back to first model:',
-            models[0].name
-          );
+          if (process.env.NODE_ENV === 'development') {
+            console.log(
+              '⚠️ Selected model not available, falling back to first model:',
+              models[0].name
+            );
+          }
           setSelectedModel(models[0].name);
         }
       } else {
         // No model selected, use first available
-        console.log(
-          '📋 No model selected, using first available:',
-          models[0].name
-        );
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            '📋 No model selected, using first available:',
+            models[0].name
+          );
+        }
         setSelectedModel(models[0].name);
       }
     }
