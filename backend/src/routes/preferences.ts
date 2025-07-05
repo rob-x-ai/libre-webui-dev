@@ -251,4 +251,48 @@ router.post(
   }
 );
 
+// Import preferences data
+router.post(
+  '/import',
+  async (
+    req: Request,
+    res: Response<ApiResponse<UserPreferences>>
+  ): Promise<void> => {
+    try {
+      const { data, mergeStrategy } = req.body;
+
+      if (!data) {
+        res.status(400).json({
+          success: false,
+          error: 'Import data is required',
+        });
+        return;
+      }
+
+      if (mergeStrategy && !['merge', 'replace'].includes(mergeStrategy)) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid merge strategy. Must be "merge" or "replace"',
+        });
+        return;
+      }
+
+      const updatedPreferences = preferencesService.importData(
+        data,
+        mergeStrategy || 'merge'
+      );
+
+      res.json({
+        success: true,
+        data: updatedPreferences,
+      });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        error: getErrorMessage(error, 'Failed to import preferences data'),
+      });
+    }
+  }
+);
+
 export default router;

@@ -155,6 +155,37 @@ function initializeTables(): void {
   `);
 
   console.log('Database tables initialized successfully');
+
+  // Create default user if no users exist
+  createDefaultUserIfNeeded();
+}
+
+/**
+ * Create a default user if no users exist in the database
+ */
+function createDefaultUserIfNeeded(): void {
+  if (!db) return;
+
+  try {
+    const userCount = db
+      .prepare('SELECT COUNT(*) as count FROM users')
+      .get() as { count: number };
+
+    if (userCount.count === 0) {
+      const now = Date.now();
+      // Create a default user for single-user mode
+      db.prepare(
+        `
+        INSERT INTO users (id, username, email, password_hash, role, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `
+      ).run('default', 'admin', null, 'default', 'admin', now, now);
+
+      console.log('Created default user for single-user mode');
+    }
+  } catch (error) {
+    console.error('Failed to create default user:', error);
+  }
 }
 
 /**

@@ -393,9 +393,22 @@ class StorageService {
   // PREFERENCES MANAGEMENT
   // =================================
 
-  getPreferences(userId = 'default'): UserPreferences | null {
+  getPreferences(userId?: string): UserPreferences | null {
     if (this.useSQLite) {
       const db = getDatabase();
+
+      // If no userId provided, get the first user (single-user mode)
+      if (!userId) {
+        const firstUser = db.prepare('SELECT id FROM users LIMIT 1').get() as
+          | { id: string }
+          | undefined;
+        if (firstUser) {
+          userId = firstUser.id;
+        } else {
+          return null; // No users found, return null
+        }
+      }
+
       const stmt = db.prepare(
         'SELECT key, value FROM user_preferences WHERE user_id = ?'
       );
@@ -428,10 +441,22 @@ class StorageService {
     return null;
   }
 
-  savePreferences(preferences: UserPreferences, userId = 'default'): void {
+  savePreferences(preferences: UserPreferences, userId?: string): void {
     if (this.useSQLite) {
       const db = getDatabase();
       const now = Date.now();
+
+      // If no userId provided, get the first user (single-user mode)
+      if (!userId) {
+        const firstUser = db.prepare('SELECT id FROM users LIMIT 1').get() as
+          | { id: string }
+          | undefined;
+        if (firstUser) {
+          userId = firstUser.id;
+        } else {
+          throw new Error('No users found in database');
+        }
+      }
 
       const transaction = db.transaction((preferences: UserPreferences) => {
         // Delete existing preferences for this user

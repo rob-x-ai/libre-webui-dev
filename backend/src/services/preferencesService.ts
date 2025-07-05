@@ -22,6 +22,16 @@ import {
   EmbeddingSettings,
 } from '../types/index.js';
 
+// Export data format interface
+interface ExportData {
+  format: string;
+  version: string;
+  preferences: Partial<UserPreferences>;
+  sessions?: unknown[];
+  documents?: unknown[];
+  exportedAt: string;
+}
+
 class PreferencesService {
   private defaultPreferences: UserPreferences = {
     defaultModel: '',
@@ -36,7 +46,7 @@ class PreferencesService {
       typical_p: 0.7,
 
       // Generation control
-      num_predict: 128,
+      num_predict: -1,
       seed: undefined,
       repeat_last_n: 64,
       repeat_penalty: 1.1,
@@ -221,6 +231,49 @@ class PreferencesService {
       return this.defaultPreferences;
     } catch (error) {
       console.error('Failed to reset preferences to defaults:', error);
+      throw error;
+    }
+  }
+
+  importData(
+    data: ExportData,
+    mergeStrategy: 'merge' | 'replace' = 'merge'
+  ): UserPreferences {
+    try {
+      // Validate that the data has preferences
+      if (!data || !data.preferences) {
+        throw new Error('Invalid import data: missing preferences');
+      }
+
+      let updatedPreferences: UserPreferences;
+
+      if (mergeStrategy === 'replace') {
+        // Replace existing preferences entirely
+        updatedPreferences = this.mergeWithDefaults(
+          data.preferences as UserPreferences
+        );
+      } else {
+        // Merge with existing preferences
+        const currentPreferences = this.getPreferences();
+        updatedPreferences = {
+          ...currentPreferences,
+          ...data.preferences,
+          generationOptions: {
+            ...currentPreferences.generationOptions,
+            ...data.preferences.generationOptions,
+          },
+          embeddingSettings: {
+            ...currentPreferences.embeddingSettings,
+            ...data.preferences.embeddingSettings,
+          },
+        };
+      }
+
+      // Save the updated preferences
+      storageService.savePreferences(updatedPreferences);
+      return updatedPreferences;
+    } catch (error) {
+      console.error('Failed to import preferences data:', error);
       throw error;
     }
   }
