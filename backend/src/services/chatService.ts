@@ -65,21 +65,22 @@ class ChatService {
       updatedAt: now,
     };
 
+    // Add system message from preferences if one exists
+    const systemMessage = preferencesService.getSystemMessage(userId);
+    if (systemMessage && systemMessage.trim()) {
+      console.log(`✅ Adding system message to session: ${sessionId}`);
+      const systemMsg: ChatMessage = {
+        id: uuidv4(),
+        role: 'system',
+        content: systemMessage.trim(),
+        timestamp: now,
+      };
+      session.messages.push(systemMsg);
+      session.updatedAt = now;
+    }
+
     this.sessions.set(sessionId, session);
     console.log(`📝 Session stored in cache: ${sessionId}`);
-
-    // Add system message from preferences if one exists
-    const systemMessage = preferencesService.getSystemMessage();
-    if (systemMessage && systemMessage.trim()) {
-      this.addMessage(
-        sessionId,
-        {
-          role: 'system',
-          content: systemMessage.trim(),
-        },
-        userId
-      );
-    }
 
     // Save to storage with user ID
     storageService.saveSession(session, userId);

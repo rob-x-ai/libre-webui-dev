@@ -20,7 +20,7 @@ import { ChatMessage as ChatMessageType } from '@/types';
 import { MessageContent } from '@/components/ui';
 import { GenerationStats } from '@/components/GenerationStats';
 import { formatTimestamp, cn } from '@/utils';
-import { User, Bot } from 'lucide-react';
+import { User, Bot, Settings } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 
@@ -36,23 +36,31 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   className,
 }) => {
   const isUser = message.role === 'user';
+  const isSystem = message.role === 'system';
   const { preferences } = useAppStore();
   const { user } = useAuthStore();
 
-  // Determine display name for user messages
-  const getUserDisplayName = () => {
-    if (!isUser) return 'Assistant';
-    if (preferences.showUsername && user?.username) {
-      return user.username;
+  // Determine display name for messages
+  const getDisplayName = () => {
+    if (isSystem) return 'System';
+    if (isUser) {
+      if (preferences.showUsername && user?.username) {
+        return user.username;
+      }
+      return 'You';
     }
-    return 'You';
+    return 'Assistant';
   };
 
   return (
     <div
       className={cn(
         'flex gap-4 p-6 transition-colors group',
-        isUser ? 'bg-transparent' : 'bg-gray-25 dark:bg-dark-100/50',
+        isUser
+          ? 'bg-transparent'
+          : isSystem
+            ? 'bg-blue-25 dark:bg-blue-950/20 border-l-4 border-blue-500'
+            : 'bg-gray-25 dark:bg-dark-100/50',
         className
       )}
     >
@@ -62,19 +70,27 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-sm',
           isUser
             ? 'bg-primary-600 text-white'
-            : 'bg-gray-700 text-white dark:bg-dark-600'
+            : isSystem
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-700 text-white dark:bg-dark-600'
         )}
       >
-        {isUser ? <User className='h-4 w-4' /> : <Bot className='h-4 w-4' />}
+        {isUser ? (
+          <User className='h-4 w-4' />
+        ) : isSystem ? (
+          <Settings className='h-4 w-4' />
+        ) : (
+          <Bot className='h-4 w-4' />
+        )}
       </div>
 
       {/* Content */}
       <div className='flex-1 min-w-0'>
         <div className='flex items-center gap-3 mb-2'>
           <span className='text-sm font-semibold text-gray-900 dark:text-dark-800'>
-            {getUserDisplayName()}
+            {getDisplayName()}
           </span>
-          {message.model && !isUser && (
+          {message.model && !isUser && !isSystem && (
             <span className='text-xs text-gray-500 dark:text-dark-600 bg-gray-100 dark:bg-dark-200 px-2 py-0.5 rounded-full'>
               {message.model}
             </span>
@@ -116,6 +132,15 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             <p className='whitespace-pre-wrap leading-relaxed'>
               {message.content}
             </p>
+          ) : isSystem ? (
+            <div className='text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800'>
+              <div className='text-xs uppercase tracking-wide font-semibold mb-1 text-blue-600 dark:text-blue-400'>
+                System Message
+              </div>
+              <p className='whitespace-pre-wrap leading-relaxed text-sm'>
+                {message.content}
+              </p>
+            </div>
           ) : (
             <div className='relative'>
               <MessageContent content={message.content} />
@@ -126,7 +151,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           )}
 
           {/* Display generation statistics for assistant messages */}
-          {!isUser && message.statistics && (
+          {!isUser && !isSystem && message.statistics && (
             <div className='mt-3'>
               <GenerationStats statistics={message.statistics} />
             </div>
