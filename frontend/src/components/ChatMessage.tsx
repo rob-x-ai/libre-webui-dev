@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatMessage as ChatMessageType } from '@/types';
 import { MessageContent } from '@/components/ui';
 import { GenerationStats } from '@/components/GenerationStats';
+import { ArtifactContainer } from '@/components/ArtifactContainer';
 import { formatTimestamp, cn } from '@/utils';
+import { parseArtifacts } from '@/utils/artifactParser';
 import { User, Bot, Settings, Edit3, Save, X } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
@@ -44,6 +46,40 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(message.content);
   const [isSaving, setIsSaving] = useState(false);
+  const [parsedContent, setParsedContent] = useState(message.content);
+  const [artifacts, setArtifacts] = useState(message.artifacts || []);
+
+  // Parse artifacts from message content on mount or when content changes
+  useEffect(() => {
+    if (!isUser && !isSystem && message.content) {
+      // Use existing artifacts from the message if available
+      if (message.artifacts && message.artifacts.length > 0) {
+        setParsedContent(message.content);
+        setArtifacts(message.artifacts);
+      } else if (!isStreaming) {
+        // Only parse when not streaming to avoid duplicates
+        const parsed = parseArtifacts(message.content);
+        setParsedContent(parsed.content);
+        setArtifacts(parsed.artifacts);
+      } else {
+        // During streaming, just show the content without parsing
+        setParsedContent(message.content);
+        setArtifacts([]);
+      }
+    }
+  }, [message.content, message.artifacts, isUser, isSystem, isStreaming]);
+
+  // Parse artifacts when streaming completes
+  useEffect(() => {
+    if (!isUser && !isSystem && message.content && !isStreaming) {
+      // Parse artifacts when streaming finishes
+      if (!message.artifacts || message.artifacts.length === 0) {
+        const parsed = parseArtifacts(message.content);
+        setParsedContent(parsed.content);
+        setArtifacts(parsed.artifacts);
+      }
+    }
+  }, [isStreaming, message.content, message.artifacts, isUser, isSystem]);
 
   // Determine display name for messages
   const getDisplayName = () => {
@@ -212,10 +248,17 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             </div>
           ) : (
             <div className='relative'>
-              <MessageContent content={message.content} />
+              <MessageContent content={parsedContent} />
               {isStreaming && (
                 <div className='inline-block w-2 h-5 bg-primary-500 animate-pulse ml-1 rounded-sm' />
               )}
+            </div>
+          )}
+
+          {/* Render artifacts for assistant messages */}
+          {!isUser && !isSystem && artifacts.length > 0 && (
+            <div className='mt-4'>
+              <ArtifactContainer artifacts={artifacts} />
             </div>
           )}
 

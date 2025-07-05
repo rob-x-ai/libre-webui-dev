@@ -61,6 +61,7 @@ interface MessageRow {
   model?: string;
   images?: string;
   statistics?: string;
+  artifacts?: string;
 }
 
 interface DocumentRow {
@@ -213,6 +214,7 @@ class StorageService {
             model: msg.model,
             images: msg.images ? JSON.parse(msg.images) : undefined,
             statistics: msg.statistics ? JSON.parse(msg.statistics) : undefined,
+            artifacts: msg.artifacts ? JSON.parse(msg.artifacts) : undefined,
           })),
         };
       });
@@ -265,6 +267,7 @@ class StorageService {
           model: msg.model,
           images: msg.images ? JSON.parse(msg.images) : undefined,
           statistics: msg.statistics ? JSON.parse(msg.statistics) : undefined,
+          artifacts: msg.artifacts ? JSON.parse(msg.artifacts) : undefined,
         })),
       };
     } else {
@@ -303,8 +306,8 @@ class StorageService {
         // Insert messages
         if (session.messages && session.messages.length > 0) {
           const insertMessageStmt = db.prepare(`
-            INSERT INTO session_messages (id, session_id, role, content, timestamp, message_index)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO session_messages (id, session_id, role, content, timestamp, message_index, model, images, statistics, artifacts)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `);
 
           session.messages.forEach((message, index) => {
@@ -314,7 +317,11 @@ class StorageService {
               message.role,
               message.content,
               message.timestamp,
-              index
+              index,
+              message.model || null,
+              message.images ? JSON.stringify(message.images) : null,
+              message.statistics ? JSON.stringify(message.statistics) : null,
+              message.artifacts ? JSON.stringify(message.artifacts) : null
             );
           });
         }

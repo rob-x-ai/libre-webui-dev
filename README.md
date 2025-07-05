@@ -191,10 +191,43 @@ The app automatically generates configuration files on first run (these are excl
 - **Real-time chat** - Streaming responses with WebSocket integration
 - **Document chat** - Upload documents (PDF, TXT, DOCX) and chat with their content using semantic search
 - **Plugin system** - Connect external AI services (OpenAI, Anthropic, Groq, etc.)
+- **Artifacts** - Interactive content rendering for HTML, SVG, code, and more
 - **Privacy-focused** - Local processing with optional external connections
 - **Zero telemetry** - No tracking or data collection
 - **Keyboard shortcuts** - VS Code-inspired shortcuts for power users (⌘B, ⌘D, ⌘,, ?)
 - **Performance optimized** - Code splitting and lazy loading for faster page loads
+
+### 🎨 Artifacts - Interactive Content Rendering
+
+Create and interact with dynamic content directly within chat conversations:
+
+#### Supported Artifact Types
+
+- ✅ **HTML Pages** - Interactive web pages with JavaScript functionality
+- ✅ **SVG Graphics** - Scalable vector graphics with animations
+- ✅ **React Components** - Interactive UI components (future enhancement)
+- ✅ **Code Snippets** - Syntax-highlighted code with copy functionality
+- ✅ **JSON Data** - Formatted data structures with validation
+- ✅ **Charts & Visualizations** - Data visualization components (future enhancement)
+
+#### How Artifacts Work
+
+1. **Automatic Detection** - Code blocks with specific languages (HTML, SVG, Python, etc.) are automatically converted to artifacts
+2. **Interactive Rendering** - Content is rendered in sandboxed environments for security
+3. **Full-Screen Mode** - Expand artifacts to full screen for better viewing
+4. **Copy & Download** - Easily copy content or download as files
+5. **Safe Execution** - All artifacts run in isolated contexts to prevent security issues
+
+#### Usage Examples
+
+Ask the AI to create:
+
+- "Create an interactive HTML page with a color picker"
+- "Generate an SVG logo with animations"
+- "Build a Python script for data analysis"
+- "Create a JSON configuration file for this project"
+
+The AI's response will automatically render as an interactive artifact alongside the explanation.
 
 ### 🤖 Complete Ollama Integration
 

@@ -27,6 +27,25 @@ export interface GenerationStatistics {
   model?: string; // Model used for generation
 }
 
+export interface Artifact {
+  id: string;
+  type:
+    | 'html'
+    | 'react'
+    | 'svg'
+    | 'mermaid'
+    | 'chart'
+    | 'code'
+    | 'text'
+    | 'json';
+  title: string;
+  content: string;
+  language?: string; // For code artifacts
+  description?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -35,6 +54,7 @@ export interface ChatMessage {
   model?: string;
   images?: string[]; // Base64 encoded images for multimodal support
   statistics?: GenerationStatistics; // Generation statistics from Ollama
+  artifacts?: Artifact[]; // Artifacts associated with this message
 }
 
 export interface ChatSession {

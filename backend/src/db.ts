@@ -44,6 +44,9 @@ export function getDatabase(): Database.Database {
     // Create tables if they don't exist
     initializeTables();
 
+    // Run migrations
+    runMigrations();
+
     console.log(`SQLite database initialized at: ${dbPath}`);
   }
 
@@ -91,6 +94,10 @@ function initializeTables(): void {
       content TEXT NOT NULL,
       timestamp INTEGER NOT NULL,
       message_index INTEGER NOT NULL,
+      model TEXT, -- Model used for this message (for assistant messages)
+      images TEXT, -- JSON array of base64 images (for multimodal support)
+      statistics TEXT, -- JSON object with generation statistics
+      artifacts TEXT, -- JSON array of artifacts
       FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
     )
   `);
@@ -185,6 +192,48 @@ function createDefaultUserIfNeeded(): void {
     }
   } catch (error) {
     console.error('Failed to create default user:', error);
+  }
+}
+
+/**
+ * Run database migrations
+ */
+function runMigrations(): void {
+  if (!db) return;
+
+  try {
+    // Check if we need to add new columns to session_messages
+    const tableInfo = db
+      .prepare('PRAGMA table_info(session_messages)')
+      .all() as Array<{
+      cid: number;
+      name: string;
+      type: string;
+      notnull: number;
+      dflt_value: unknown;
+      pk: number;
+    }>;
+
+    const existingColumns = tableInfo.map(col => col.name);
+
+    // Add missing columns one by one
+    const newColumns = [
+      { name: 'model', type: 'TEXT' },
+      { name: 'images', type: 'TEXT' },
+      { name: 'statistics', type: 'TEXT' },
+      { name: 'artifacts', type: 'TEXT' },
+    ];
+
+    for (const column of newColumns) {
+      if (!existingColumns.includes(column.name)) {
+        console.log(`Adding column ${column.name} to session_messages table`);
+        db.exec(
+          `ALTER TABLE session_messages ADD COLUMN ${column.name} ${column.type}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error running migrations:', error);
   }
 }
 

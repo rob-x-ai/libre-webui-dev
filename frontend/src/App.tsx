@@ -45,6 +45,7 @@ const ModelsPage = React.lazy(() => import('@/pages/ModelsPage'));
 const UserManagementPage = React.lazy(
   () => import('@/pages/UserManagementPage')
 );
+const ArtifactDemoPage = React.lazy(() => import('@/pages/ArtifactDemoPage'));
 
 // Import LoginPage directly (not lazy) to avoid suspense issues during auth redirects
 import { LoginPage } from '@/pages/LoginPage';
@@ -254,6 +255,10 @@ const App: React.FC = () => {
                                 element={<ChatPage />}
                               />
                               <Route path='/models' element={<ModelsPage />} />
+                              <Route
+                                path='/artifacts'
+                                element={<ArtifactDemoPage />}
+                              />
                               <Route
                                 path='/users'
                                 element={

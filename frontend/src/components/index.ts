@@ -40,5 +40,8 @@ export {
 export { DemoModeBanner } from './DemoModeBanner';
 export { PluginManager } from './PluginManager';
 export { GenerationStats } from './GenerationStats';
+export { ArtifactRenderer } from './ArtifactRenderer';
+export { ArtifactContainer } from './ArtifactContainer';
+export { ArtifactDemo } from './ArtifactDemo';
 export * from './ui';
 export { FirstTimeSetup } from './FirstTimeSetup';
