@@ -44,7 +44,7 @@ const UserManagementPage: React.FC = () => {
     role: 'user',
   });
 
-  const { user: currentUser, systemInfo } = useAuthStore();
+  const { user: currentUser } = useAuthStore();
 
   // Load users on component mount
   useEffect(() => {
@@ -179,24 +179,6 @@ const UserManagementPage: React.FC = () => {
     return (
       <div className='flex items-center justify-center p-8'>
         <div className='w-8 h-8 border-4 border-gray-200 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin'></div>
-      </div>
-    );
-  }
-
-  // Don't show user management in single user mode
-  if (systemInfo?.singleUserMode) {
-    return (
-      <div className='p-6 bg-white dark:bg-dark-50 min-h-full'>
-        <Card className='bg-white dark:bg-dark-25 border border-gray-200 dark:border-dark-200 shadow-lg'>
-          <CardHeader>
-            <CardTitle className='text-gray-900 dark:text-gray-100'>
-              User Management
-            </CardTitle>
-            <CardDescription className='text-gray-600 dark:text-gray-400'>
-              User management is not available in single user mode.
-            </CardDescription>
-          </CardHeader>
-        </Card>
       </div>
     );
   }

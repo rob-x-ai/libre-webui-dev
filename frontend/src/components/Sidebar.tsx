@@ -262,24 +262,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </Link>
 
               {/* User Management - only show for admins when auth is required */}
-              {systemInfo?.requiresAuth &&
-                user &&
-                isAdmin() &&
-                !systemInfo?.singleUserMode && (
-                  <Link
-                    to='/users'
-                    onClick={() => window.innerWidth < 768 && onClose()}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                      location.pathname === '/users'
-                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
-                    )}
-                  >
-                    <Users className='h-4 w-4' />
-                    User Management
-                  </Link>
-                )}
+              {systemInfo?.requiresAuth && user && isAdmin() && (
+                <Link
+                  to='/users'
+                  onClick={() => window.innerWidth < 768 && onClose()}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                    location.pathname === '/users'
+                      ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                  )}
+                >
+                  <Users className='h-4 w-4' />
+                  User Management
+                </Link>
+              )}
 
               <button
                 onClick={() => {
