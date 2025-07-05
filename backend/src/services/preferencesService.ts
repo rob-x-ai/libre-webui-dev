@@ -100,9 +100,9 @@ class PreferencesService {
     }
   }
 
-  getPreferences(): UserPreferences {
+  getPreferences(userId?: string): UserPreferences {
     try {
-      const preferences = storageService.getPreferences();
+      const preferences = storageService.getPreferences(userId);
       if (preferences) {
         // Merge with defaults to ensure all fields exist
         return this.mergeWithDefaults(preferences);
@@ -129,8 +129,11 @@ class PreferencesService {
     };
   }
 
-  updatePreferences(updates: Partial<UserPreferences>): UserPreferences {
-    const currentPreferences = this.getPreferences();
+  updatePreferences(
+    updates: Partial<UserPreferences>,
+    userId?: string
+  ): UserPreferences {
+    const currentPreferences = this.getPreferences(userId);
     const updatedPreferences: UserPreferences = {
       ...currentPreferences,
       ...updates,
@@ -145,7 +148,7 @@ class PreferencesService {
     };
 
     try {
-      storageService.savePreferences(updatedPreferences);
+      storageService.savePreferences(updatedPreferences, userId);
       return updatedPreferences;
     } catch (error) {
       console.error('Failed to update preferences:', error);
@@ -153,81 +156,101 @@ class PreferencesService {
     }
   }
 
-  setDefaultModel(model: string): UserPreferences {
-    return this.updatePreferences({ defaultModel: model });
+  setDefaultModel(model: string, userId?: string): UserPreferences {
+    return this.updatePreferences({ defaultModel: model }, userId);
   }
 
-  setTheme(theme: 'light' | 'dark'): UserPreferences {
-    return this.updatePreferences({ theme: { mode: theme } });
+  setTheme(theme: 'light' | 'dark', userId?: string): UserPreferences {
+    return this.updatePreferences({ theme: { mode: theme } }, userId);
   }
 
-  setSystemMessage(systemMessage: string): UserPreferences {
-    return this.updatePreferences({ systemMessage });
+  setSystemMessage(systemMessage: string, userId?: string): UserPreferences {
+    return this.updatePreferences({ systemMessage }, userId);
   }
 
-  getSystemMessage(): string {
-    return this.getPreferences().systemMessage;
+  getSystemMessage(userId?: string): string {
+    return this.getPreferences(userId).systemMessage;
   }
 
-  getDefaultModel(): string {
-    return this.getPreferences().defaultModel;
+  getDefaultModel(userId?: string): string {
+    return this.getPreferences(userId).defaultModel;
   }
 
-  getGenerationOptions(): GenerationOptions {
-    return this.getPreferences().generationOptions;
+  getGenerationOptions(userId?: string): GenerationOptions {
+    return this.getPreferences(userId).generationOptions;
   }
 
   updateGenerationOptions(
-    options: Partial<GenerationOptions>
+    options: Partial<GenerationOptions>,
+    userId?: string
   ): UserPreferences {
-    const currentPreferences = this.getPreferences();
-    return this.updatePreferences({
-      generationOptions: {
-        ...currentPreferences.generationOptions,
-        ...options,
+    const currentPreferences = this.getPreferences(userId);
+    return this.updatePreferences(
+      {
+        generationOptions: {
+          ...currentPreferences.generationOptions,
+          ...options,
+        },
       },
-    });
+      userId
+    );
   }
 
-  setGenerationOptions(options: GenerationOptions): UserPreferences {
-    return this.updatePreferences({ generationOptions: options });
+  setGenerationOptions(
+    options: GenerationOptions,
+    userId?: string
+  ): UserPreferences {
+    return this.updatePreferences({ generationOptions: options }, userId);
   }
 
-  resetGenerationOptions(): UserPreferences {
-    return this.updatePreferences({
-      generationOptions: this.defaultPreferences.generationOptions,
-    });
+  resetGenerationOptions(userId?: string): UserPreferences {
+    return this.updatePreferences(
+      {
+        generationOptions: this.defaultPreferences.generationOptions,
+      },
+      userId
+    );
   }
 
-  getEmbeddingSettings(): EmbeddingSettings {
-    return this.getPreferences().embeddingSettings;
+  getEmbeddingSettings(userId?: string): EmbeddingSettings {
+    return this.getPreferences(userId).embeddingSettings;
   }
 
   updateEmbeddingSettings(
-    settings: Partial<EmbeddingSettings>
+    settings: Partial<EmbeddingSettings>,
+    userId?: string
   ): UserPreferences {
-    const currentPreferences = this.getPreferences();
-    return this.updatePreferences({
-      embeddingSettings: {
-        ...currentPreferences.embeddingSettings,
-        ...settings,
+    const currentPreferences = this.getPreferences(userId);
+    return this.updatePreferences(
+      {
+        embeddingSettings: {
+          ...currentPreferences.embeddingSettings,
+          ...settings,
+        },
       },
-    });
+      userId
+    );
   }
 
-  setEmbeddingSettings(settings: EmbeddingSettings): UserPreferences {
-    return this.updatePreferences({ embeddingSettings: settings });
+  setEmbeddingSettings(
+    settings: EmbeddingSettings,
+    userId?: string
+  ): UserPreferences {
+    return this.updatePreferences({ embeddingSettings: settings }, userId);
   }
 
-  resetEmbeddingSettings(): UserPreferences {
-    return this.updatePreferences({
-      embeddingSettings: this.defaultPreferences.embeddingSettings,
-    });
+  resetEmbeddingSettings(userId?: string): UserPreferences {
+    return this.updatePreferences(
+      {
+        embeddingSettings: this.defaultPreferences.embeddingSettings,
+      },
+      userId
+    );
   }
 
-  resetToDefaults(): UserPreferences {
+  resetToDefaults(userId?: string): UserPreferences {
     try {
-      storageService.savePreferences(this.defaultPreferences);
+      storageService.savePreferences(this.defaultPreferences, userId);
       return this.defaultPreferences;
     } catch (error) {
       console.error('Failed to reset preferences to defaults:', error);
@@ -237,7 +260,8 @@ class PreferencesService {
 
   importData(
     data: ExportData,
-    mergeStrategy: 'merge' | 'replace' = 'merge'
+    mergeStrategy: 'merge' | 'replace' = 'merge',
+    userId?: string
   ): UserPreferences {
     try {
       // Validate that the data has preferences
@@ -254,7 +278,7 @@ class PreferencesService {
         );
       } else {
         // Merge with existing preferences
-        const currentPreferences = this.getPreferences();
+        const currentPreferences = this.getPreferences(userId);
         updatedPreferences = {
           ...currentPreferences,
           ...data.preferences,
@@ -270,7 +294,7 @@ class PreferencesService {
       }
 
       // Save the updated preferences
-      storageService.savePreferences(updatedPreferences);
+      storageService.savePreferences(updatedPreferences, userId);
       return updatedPreferences;
     } catch (error) {
       console.error('Failed to import preferences data:', error);

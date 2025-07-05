@@ -15,25 +15,38 @@
  * limitations under the License.
  */
 
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import preferencesService from '../services/preferencesService.js';
 import {
   ApiResponse,
   UserPreferences,
   getErrorMessage,
 } from '../types/index.js';
+import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Apply authentication middleware to all preferences routes
+router.use(authenticate);
 
 // Get user preferences
 router.get(
   '/',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
-      const preferences = preferencesService.getPreferences();
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
+      const preferences = preferencesService.getPreferences(userId);
       res.json({
         success: true,
         data: preferences,
@@ -51,12 +64,24 @@ router.get(
 router.put(
   '/',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const updates = req.body;
-      const updatedPreferences = preferencesService.updatePreferences(updates);
+      const updatedPreferences = preferencesService.updatePreferences(
+        updates,
+        userId
+      );
 
       res.json({
         success: true,
@@ -75,10 +100,19 @@ router.put(
 router.put(
   '/default-model',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const { model } = req.body;
 
       if (!model) {
@@ -89,7 +123,10 @@ router.put(
         return;
       }
 
-      const updatedPreferences = preferencesService.setDefaultModel(model);
+      const updatedPreferences = preferencesService.setDefaultModel(
+        model,
+        userId
+      );
 
       res.json({
         success: true,
@@ -108,10 +145,19 @@ router.put(
 router.put(
   '/system-message',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const { message } = req.body;
 
       if (message === undefined) {
@@ -122,7 +168,10 @@ router.put(
         return;
       }
 
-      const updatedPreferences = preferencesService.setSystemMessage(message);
+      const updatedPreferences = preferencesService.setSystemMessage(
+        message,
+        userId
+      );
 
       res.json({
         success: true,
@@ -141,10 +190,19 @@ router.put(
 router.put(
   '/generation-options',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const options = req.body;
 
       if (!options || typeof options !== 'object') {
@@ -155,8 +213,10 @@ router.put(
         return;
       }
 
-      const updatedPreferences =
-        preferencesService.setGenerationOptions(options);
+      const updatedPreferences = preferencesService.setGenerationOptions(
+        options,
+        userId
+      );
 
       res.json({
         success: true,
@@ -175,11 +235,21 @@ router.put(
 router.post(
   '/generation-options/reset',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
-      const updatedPreferences = preferencesService.resetGenerationOptions();
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
+      const updatedPreferences =
+        preferencesService.resetGenerationOptions(userId);
 
       res.json({
         success: true,
@@ -198,10 +268,19 @@ router.post(
 router.put(
   '/embedding-settings',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const settings = req.body;
 
       if (!settings || typeof settings !== 'object') {
@@ -212,8 +291,10 @@ router.put(
         return;
       }
 
-      const updatedPreferences =
-        preferencesService.setEmbeddingSettings(settings);
+      const updatedPreferences = preferencesService.setEmbeddingSettings(
+        settings,
+        userId
+      );
 
       res.json({
         success: true,
@@ -232,11 +313,21 @@ router.put(
 router.post(
   '/embedding-settings/reset',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
-      const updatedPreferences = preferencesService.resetEmbeddingSettings();
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
+      const updatedPreferences =
+        preferencesService.resetEmbeddingSettings(userId);
 
       res.json({
         success: true,
@@ -255,10 +346,19 @@ router.post(
 router.post(
   '/import',
   async (
-    req: Request,
+    req: AuthenticatedRequest,
     res: Response<ApiResponse<UserPreferences>>
   ): Promise<void> => {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User ID not found in token',
+        });
+        return;
+      }
+
       const { data, mergeStrategy } = req.body;
 
       if (!data) {
@@ -279,7 +379,8 @@ router.post(
 
       const updatedPreferences = preferencesService.importData(
         data,
-        mergeStrategy || 'merge'
+        mergeStrategy || 'merge',
+        userId
       );
 
       res.json({
