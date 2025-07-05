@@ -84,16 +84,18 @@ class PreferencesService {
   };
 
   constructor() {
-    this.ensurePreferencesExist();
+    // Don't automatically create preferences - let them be created per user when needed
   }
 
-  private ensurePreferencesExist() {
+  private ensurePreferencesExist(userId?: string) {
     try {
-      const preferences = storageService.getPreferences();
+      const preferences = storageService.getPreferences(userId);
       if (!preferences) {
-        // Create default preferences if none exist
-        storageService.savePreferences(this.defaultPreferences);
-        console.log('Created default preferences');
+        // Create default preferences for this user if none exist
+        storageService.savePreferences(this.defaultPreferences, userId);
+        console.log(
+          `Created default preferences for user: ${userId || 'default'}`
+        );
       }
     } catch (error) {
       console.error('Failed to ensure preferences exist:', error);
@@ -102,6 +104,9 @@ class PreferencesService {
 
   getPreferences(userId?: string): UserPreferences {
     try {
+      // Ensure preferences exist for this user
+      this.ensurePreferencesExist(userId);
+
       const preferences = storageService.getPreferences(userId);
       if (preferences) {
         // Merge with defaults to ensure all fields exist
