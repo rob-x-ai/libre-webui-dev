@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ChatMessage as ChatMessageType } from '@/types';
 import { MessageContent } from '@/components/ui';
 import { GenerationStats } from '@/components/GenerationStats';
 import { formatTimestamp, cn } from '@/utils';
-import { User, Bot, Settings } from 'lucide-react';
+import { User, Bot, Settings, Edit3, Save, X } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
+import { useChatStore } from '@/store/chatStore';
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -39,6 +40,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const isSystem = message.role === 'system';
   const { preferences } = useAppStore();
   const { user } = useAuthStore();
+  const { setSystemMessage } = useChatStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(message.content);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Determine display name for messages
   const getDisplayName = () => {
@@ -52,6 +57,28 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     return 'Assistant';
   };
 
+  const handleEditSystemMessage = () => {
+    setIsEditing(true);
+    setEditedContent(message.content);
+  };
+
+  const handleSaveSystemMessage = async () => {
+    setIsSaving(true);
+    try {
+      await setSystemMessage(editedContent);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to save system message:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedContent(message.content);
+  };
+
   return (
     <div
       className={cn(
@@ -59,19 +86,19 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         isUser
           ? 'bg-transparent'
           : isSystem
-            ? 'bg-blue-25 dark:bg-blue-950/20 border-l-4 border-blue-500'
+            ? 'bg-gray-25 dark:bg-dark-25 border-l-4 border-primary-500 dark:border-primary-400'
             : 'bg-gray-25 dark:bg-dark-100/50',
         className
       )}
     >
-      {/* Avatar */}
+      {/* Avatar */}{' '}
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-sm',
           isUser
             ? 'bg-primary-600 text-white'
             : isSystem
-              ? 'bg-blue-600 text-white'
+              ? 'bg-primary-600 dark:bg-primary-500 text-white'
               : 'bg-gray-700 text-white dark:bg-dark-600'
         )}
       >
@@ -83,7 +110,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           <Bot className='h-4 w-4' />
         )}
       </div>
-
       {/* Content */}
       <div className='flex-1 min-w-0'>
         <div className='flex items-center gap-3 mb-2'>
@@ -133,13 +159,56 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               {message.content}
             </p>
           ) : isSystem ? (
-            <div className='text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800'>
-              <div className='text-xs uppercase tracking-wide font-semibold mb-1 text-blue-600 dark:text-blue-400'>
-                System Message
+            <div className='bg-white dark:bg-dark-100 rounded-lg p-4 border border-gray-200 dark:border-dark-300'>
+              <div className='text-xs uppercase tracking-wide font-semibold mb-2 text-gray-700 dark:text-gray-300 flex items-center justify-between'>
+                <div className='flex items-center gap-1.5'>
+                  <Settings className='h-3 w-3' />
+                  System Message
+                </div>
+                <div className='flex items-center gap-1'>
+                  {isEditing ? (
+                    <>
+                      <button
+                        onClick={handleSaveSystemMessage}
+                        disabled={isSaving}
+                        className='p-1 hover:bg-gray-100 dark:hover:bg-dark-200 rounded transition-colors disabled:opacity-50'
+                        title='Save changes'
+                      >
+                        <Save className='h-3 w-3 text-green-600 dark:text-green-400' />
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        disabled={isSaving}
+                        className='p-1 hover:bg-gray-100 dark:hover:bg-dark-200 rounded transition-colors disabled:opacity-50'
+                        title='Cancel editing'
+                      >
+                        <X className='h-3 w-3 text-red-600 dark:text-red-400' />
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={handleEditSystemMessage}
+                      className='p-1 hover:bg-gray-100 dark:hover:bg-dark-200 rounded transition-colors'
+                      title='Edit system message'
+                    >
+                      <Edit3 className='h-3 w-3 text-gray-600 dark:text-gray-400' />
+                    </button>
+                  )}
+                </div>
               </div>
-              <p className='whitespace-pre-wrap leading-relaxed text-sm'>
-                {message.content}
-              </p>
+              {isEditing ? (
+                <textarea
+                  value={editedContent}
+                  onChange={e => setEditedContent(e.target.value)}
+                  className='w-full min-h-[100px] p-3 text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-dark-50 border border-gray-200 dark:border-dark-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent'
+                  placeholder='Enter your system message...'
+                  disabled={isSaving}
+                />
+              ) : (
+                <p className='whitespace-pre-wrap leading-relaxed text-sm text-gray-900 dark:text-gray-100'>
+                  {message.content}
+                </p>
+              )}
             </div>
           ) : (
             <div className='relative'>
