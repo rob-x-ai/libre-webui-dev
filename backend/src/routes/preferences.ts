@@ -16,6 +16,7 @@
  */
 
 import express, { Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import preferencesService from '../services/preferencesService.js';
 import {
   ApiResponse,
@@ -25,6 +26,21 @@ import {
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Rate limiter for preferences routes: 30 requests per minute (reasonable for settings)
+const preferencesRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // limit each IP to 30 requests per minute
+  message: {
+    success: false,
+    message: 'Too many preferences requests, please slow down',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiter to all preferences routes
+router.use(preferencesRateLimiter);
 
 // Apply authentication middleware to all preferences routes
 router.use(authenticate);
