@@ -1,0 +1,163 @@
+# Changelog
+
+All notable changes to Libre WebUI will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] - 2025-07-05
+
+### 🎉 Initial Release
+
+The first official release of Libre WebUI - a privacy-first, local-first AI chat interface with optional external service integration.
+
+### ✨ Major Features
+
+#### 🔐 Authentication & User Management
+
+- **Complete authentication system** with secure JWT-based sessions
+- **Multi-user support** with role-based access (admin/user)
+- **Beautiful first-time setup** experience for admin account creation
+- **User management interface** with CRUD operations
+- **Rate limiting** for authentication, chat, and user management endpoints
+- **WebSocket authentication** with token lifecycle management
+
+#### 🗄️ Database Migration to SQLite
+
+- **SQLite database** replacing JSON file storage for better performance
+- **Automatic migration system** for existing JSON data
+- **User data import/export** functionality with duplicate detection
+- **Session management** with persistent storage
+- **Preferences system** with user-specific settings
+
+#### 🎨 Artifacts Feature
+
+- **Interactive content rendering** for HTML, SVG, code snippets, and JSON
+- **Automatic artifact detection** from code blocks in chat messages
+- **Sandboxed execution** for security with iframe isolation
+- **Full-screen viewing** mode for better content interaction
+- **Copy & download functionality** for all artifact types
+- **Intelligent parsing** with complexity detection to prevent spam artifacts
+
+#### 🔌 Plugin Architecture
+
+- **External AI service integration** (OpenAI, Anthropic, Groq)
+- **Automatic model updates** from AI providers
+- **Flexible plugin system** for easy service addition
+
+#### 📄 Document Processing (RAG)
+
+- **Document upload** support (PDF, TXT, DOCX)
+- **Semantic search** integration for document chat
+- **Vector embeddings** with configurable models
+
+### 🎨 User Interface
+
+#### 🖼️ Modern Design System
+
+- **Clean, responsive interface** that works on desktop, tablet, and mobile
+- **Dark/light theme** support with proper color tokens
+- **Improved component styling** with consistent design patterns
+- **Enhanced settings modal** with custom range sliders
+- **User menu dropdown** with portal rendering and proper positioning
+
+#### ⚡ Performance Optimizations
+
+- **Code splitting** and lazy loading for faster page loads
+- **Real-time chat** with WebSocket streaming
+- **Optimized artifact rendering** with duplicate prevention
+- **Efficient state management** with Zustand stores
+
+#### ⌨️ Developer Experience
+
+- **VS Code-inspired keyboard shortcuts** (⌘B, ⌘D, ⌘,, ?)
+- **Complete TypeScript coverage** across frontend and backend
+- **Proper error handling** and loading states
+- **Development mode debugging** with helpful console logs
+
+### 🔒 Security Features
+
+- **Sandboxed artifact execution** with iframe security
+- **Content validation** for all user inputs
+- **Rate limiting** on all API endpoints
+- **Secure password handling** with proper hashing
+- **CORS configuration** for development and production
+- **Input sanitization** for HTML and code content
+
+### 🛠️ Technical Improvements
+
+#### Backend
+
+- **Express.js API** with comprehensive route handling
+- **JWT authentication** with proper token management
+- **Database migrations** with automatic schema updates
+- **WebSocket server** for real-time communication
+- **Plugin service architecture** for external API integration
+- **Comprehensive error handling** and logging
+
+#### Frontend
+
+- **React 18** with modern hooks and functional components
+- **TypeScript** for type safety across the application
+- **Tailwind CSS** with custom design tokens
+- **React Router** for client-side navigation
+- **Zustand** for state management
+- **Axios** for API communication with interceptors
+
+### 📚 Documentation
+
+- **Complete documentation suite** with 14 comprehensive guides
+- **Step-by-step setup guides** for quick onboarding
+- **Feature documentation** for all major capabilities
+- **Technical implementation guides** for developers
+- **Troubleshooting guides** for common issues
+
+### 🧪 Quality Assurance
+
+- **ESLint configuration** with TypeScript support
+- **Prettier formatting** for consistent code style
+- **Git hooks** for pre-commit validation
+- **Security scanning** with CodeQL integration
+- **Comprehensive testing** of all major features
+
+### 📦 Deployment & Operations
+
+- **Docker support** with development and production configurations
+- **npm scripts** for easy development workflow
+- **Environment configuration** for different deployment scenarios
+- **Logging system** for debugging and monitoring
+- **Health check endpoints** for service monitoring
+
+### 🎯 Highlights
+
+This release establishes Libre WebUI as a **production-ready alternative** to corporate AI chat interfaces, with:
+
+- **Privacy-first architecture** - Everything runs locally by default
+- **No telemetry or tracking** - Your data stays on your hardware
+- **Open source** - Complete transparency and community control
+- **Feature parity** with leading AI chat interfaces
+- **Extensible plugin system** for future growth
+- **Professional user experience** with modern UI/UX
+
+### 🚀 Getting Started
+
+```bash
+# Quick start
+git clone https://github.com/libre-webui/libre-webui
+cd libre-webui
+./start.sh
+```
+
+Visit the [documentation](./docs/00-README.md) for detailed setup instructions.
+
+### 🤝 Contributing
+
+We welcome contributions! See our [contributing guide](./docs/00-README.md#contributing) for details.
+
+### 📄 License
+
+This project is licensed under the Apache License 2.0. See [LICENSE](./LICENSE) for details.
+
+---
+
+**Full Changelog**: https://github.com/libre-webui/libre-webui/commits/v0.1.0

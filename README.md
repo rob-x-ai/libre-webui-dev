@@ -442,6 +442,22 @@ await pluginApi.activatePlugin('openai');
 const activePlugin = await pluginApi.getActivePlugin();
 ```
 
+## 📋 Release Notes
+
+**Current Version: v0.1.0** - [View Changelog](./CHANGELOG.md)
+
+This is the first official release of Libre WebUI! 🎉
+
+**Highlights:**
+
+- Complete authentication & user management system
+- SQLite database migration for better performance
+- Interactive artifacts feature for code execution
+- Plugin architecture for external AI services
+- Modern UI with dark/light theme support
+
+**[📋 Full Changelog →](./CHANGELOG.md)**
+
 ## License
 
 Licensed under the Apache License, Version 2.0 (the "License");

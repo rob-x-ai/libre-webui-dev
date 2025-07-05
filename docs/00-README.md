@@ -24,6 +24,14 @@ Welcome to Libre WebUI! Your complete guide to local AI chat.
 | **[🎨 Artifacts Feature](./13-ARTIFACTS_FEATURE.md)** | Interactive content and code execution | 7 min |
 | **[⚙️ Artifacts Implementation](./14-ARTIFACTS_IMPLEMENTATION.md)** | Technical implementation details | 15 min |
 
+## 📋 Project Information
+
+| Document | Description |
+|----------|-------------|
+| **[📋 Changelog](../CHANGELOG.md)** | Release notes and version history |
+| **[📄 License](../LICENSE)** | Apache 2.0 License terms |
+| **[⚖️ Copyright](./07-COPYRIGHT.md)** | Copyright and attribution information |
+
 ## What is Libre WebUI?
 
 **Local-first AI chat** that runs entirely on your computer. No data leaves your machine unless you choose to connect external services.

@@ -111,17 +111,27 @@ const ARTIFACT_MARKERS = [
 ];
 
 /**
+ * Safely extract and sanitize text content from HTML
+ */
+function sanitizeHtmlText(text: string): string {
+  // Create a temporary DOM element to safely extract text content
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = text;
+  return tempDiv.textContent || tempDiv.innerText || '';
+}
+
+/**
  * Extract title from HTML content
  */
 function extractTitle(htmlContent: string): string | null {
   const titleMatch = htmlContent.match(/<title[^>]*>(.*?)<\/title>/i);
   if (titleMatch) {
-    return titleMatch[1].trim();
+    return sanitizeHtmlText(titleMatch[1]).trim();
   }
 
   const h1Match = htmlContent.match(/<h1[^>]*>(.*?)<\/h1>/i);
   if (h1Match) {
-    return h1Match[1].replace(/<[^>]*>/g, '').trim();
+    return sanitizeHtmlText(h1Match[1]).trim();
   }
 
   return null;
