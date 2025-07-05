@@ -21,6 +21,8 @@ Welcome to Libre WebUI! Your complete guide to local AI chat.
 | **[🗄️ SQLite Migration](./10-SQLITE_MIGRATION.md)** | Upgrade from JSON to SQLite storage | 8 min |
 | **[🤖 Model Updater](./11-MODEL_UPDATER.md)** | Auto-update AI provider models | 5 min |
 | **[🔐 Authentication](./12-AUTHENTICATION.md)** | User management and security | 10 min |
+| **[🎨 Artifacts Feature](./13-ARTIFACTS_FEATURE.md)** | Interactive content and code execution | 7 min |
+| **[⚙️ Artifacts Implementation](./14-ARTIFACTS_IMPLEMENTATION.md)** | Technical implementation details | 15 min |
 
 ## What is Libre WebUI?
 

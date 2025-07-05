@@ -229,6 +229,9 @@ Ask the AI to create:
 
 The AI's response will automatically render as an interactive artifact alongside the explanation.
 
+**[🎨 Complete Artifacts Guide →](./docs/13-ARTIFACTS_FEATURE.md)**
+**[⚙️ Technical Implementation →](./docs/14-ARTIFACTS_IMPLEMENTATION.md)**
+
 ### 🤖 Complete Ollama Integration
 
 All Ollama API endpoints are integrated and ready to use:
