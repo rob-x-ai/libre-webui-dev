@@ -403,6 +403,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
       const result = await preferencesApi.importData(
         importData,
+        // Map frontend merge strategies to backend API:
+        // 'skip' -> 'merge' (merge with existing, keeps existing values)
+        // 'overwrite' -> 'replace' (completely replace existing data)
+        // 'merge' -> 'merge' (merge with existing, new values take precedence)
         mergeStrategy === 'overwrite' ? 'replace' : 'merge'
       );
 
