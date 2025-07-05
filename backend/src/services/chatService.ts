@@ -44,9 +44,17 @@ class ChatService {
     // The storage service handles both SQLite and JSON fallback
   }
 
-  createSession(model: string, title?: string): ChatSession {
+  createSession(
+    model: string,
+    title?: string,
+    userId: string = 'default'
+  ): ChatSession {
     const sessionId = uuidv4();
     const now = Date.now();
+
+    console.log(
+      `🚀 ChatService.createSession: sessionId=${sessionId}, userId=${userId}, model=${model}`
+    );
 
     const session: ChatSession = {
       id: sessionId,
@@ -58,42 +66,73 @@ class ChatService {
     };
 
     this.sessions.set(sessionId, session);
+    console.log(`📝 Session stored in cache: ${sessionId}`);
 
     // Add system message from preferences if one exists
     const systemMessage = preferencesService.getSystemMessage();
     if (systemMessage && systemMessage.trim()) {
-      this.addMessage(sessionId, {
-        role: 'system',
-        content: systemMessage.trim(),
-      });
+      this.addMessage(
+        sessionId,
+        {
+          role: 'system',
+          content: systemMessage.trim(),
+        },
+        userId
+      );
     }
 
-    // Save to storage
-    storageService.saveSession(session);
+    // Save to storage with user ID
+    storageService.saveSession(session, userId);
+    console.log(`💾 Session saved to storage: ${sessionId} for user ${userId}`);
     return session;
   }
 
-  getSession(sessionId: string): ChatSession | undefined {
+  getSession(
+    sessionId: string,
+    userId: string = 'default'
+  ): ChatSession | undefined {
+    console.log(
+      `🔍 ChatService.getSession: sessionId=${sessionId}, userId=${userId}`
+    );
+
     // First try to get from memory cache
     let session = this.sessions.get(sessionId);
+    console.log(`📝 Session in cache: ${session ? 'YES' : 'NO'}`);
 
-    // If not in cache, try to load from storage
+    // If not in cache, try to load from storage (with user verification)
     if (!session) {
-      session = storageService.getSession(sessionId);
+      session = storageService.getSession(sessionId, userId);
+      console.log(`💾 Session in storage: ${session ? 'YES' : 'NO'}`);
       if (session) {
         this.sessions.set(sessionId, session);
       }
+    } else {
+      // If found in cache, we should still verify it belongs to this user
+      // by checking the storage service (which has the user verification logic)
+      const verifiedSession = storageService.getSession(sessionId, userId);
+      console.log(
+        `✅ Session verification: ${verifiedSession ? 'PASSED' : 'FAILED'}`
+      );
+      if (!verifiedSession) {
+        // Session doesn't belong to this user, remove from cache and return undefined
+        console.log(
+          `❌ Removing session ${sessionId} from cache - verification failed`
+        );
+        this.sessions.delete(sessionId);
+        return undefined;
+      }
     }
 
+    console.log(`🎯 Returning session: ${session ? session.id : 'undefined'}`);
     return session;
   }
 
-  getAllSessions(): ChatSession[] {
+  getAllSessions(userId: string = 'default'): ChatSession[] {
     // Load fresh data from storage to ensure we have the latest
-    const sessionsArray = storageService.getAllSessions();
+    const sessionsArray = storageService.getAllSessions(userId);
 
-    // Update memory cache
-    this.sessions.clear();
+    // Update memory cache with user-specific sessions
+    // Note: We don't clear the entire cache since other users might be using it
     sessionsArray.forEach(session => {
       this.sessions.set(session.id, session);
     });
@@ -103,9 +142,11 @@ class ChatService {
 
   updateSession(
     sessionId: string,
-    updates: Partial<ChatSession>
+    updates: Partial<ChatSession>,
+    userId: string = 'default'
   ): ChatSession | undefined {
-    const session = this.sessions.get(sessionId);
+    // First verify the session belongs to the user
+    const session = this.getSession(sessionId, userId);
     if (!session) return undefined;
 
     const updatedSession = {
@@ -115,15 +156,17 @@ class ChatService {
     };
 
     this.sessions.set(sessionId, updatedSession);
-    storageService.saveSession(updatedSession);
+    storageService.saveSession(updatedSession, userId);
     return updatedSession;
   }
 
   addMessage(
     sessionId: string,
-    message: Omit<ChatMessage, 'id' | 'timestamp'> & { id?: string }
+    message: Omit<ChatMessage, 'id' | 'timestamp'> & { id?: string },
+    userId: string = 'default'
   ): ChatMessage | undefined {
-    const session = this.sessions.get(sessionId);
+    // First verify the session belongs to the user
+    const session = this.getSession(sessionId, userId);
     if (!session) return undefined;
 
     const messageId = message.id || uuidv4();
@@ -158,29 +201,35 @@ class ChatService {
     }
 
     this.sessions.set(sessionId, session);
-    storageService.saveSession(session);
+    storageService.saveSession(session, userId);
     return newMessage;
   }
 
-  deleteSession(sessionId: string): boolean {
-    const deleted = storageService.deleteSession(sessionId);
+  deleteSession(sessionId: string, userId: string = 'default'): boolean {
+    // First verify the session belongs to the user
+    const session = this.getSession(sessionId, userId);
+    if (!session) return false;
+
+    const deleted = storageService.deleteSession(sessionId, userId);
     if (deleted) {
       this.sessions.delete(sessionId);
     }
     return deleted;
   }
 
-  clearAllSessions(): void {
-    // Clear local memory
-    const deletedCount = this.sessions.size;
-    this.sessions.clear();
+  clearAllSessions(userId: string = 'default'): void {
+    // Get all sessions for the user first
+    const userSessions = this.getAllSessions(userId);
 
-    // Delete all sessions from storage (SQLite or JSON) - more efficient bulk operation
-    const actualDeleted = storageService.clearAllSessions();
+    // Remove them from memory cache
+    userSessions.forEach(session => {
+      this.sessions.delete(session.id);
+    });
 
-    console.log(
-      `Cleared all sessions: ${deletedCount} from memory, ${actualDeleted} from storage`
-    );
+    // Clear them from storage
+    userSessions.forEach(session => {
+      storageService.deleteSession(session.id, userId);
+    });
   }
 
   private generateTitle(content: string): string {

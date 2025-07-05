@@ -30,6 +30,9 @@ export { ImageUpload } from './ImageUpload';
 export { StructuredOutput } from './StructuredOutput';
 export { DocumentUpload } from './DocumentUpload';
 export { DocumentIndicator } from './DocumentIndicator';
+export { LoginForm } from './LoginForm';
+export { UserMenu } from './UserMenu';
+export { ProtectedRoute } from './ProtectedRoute';
 export {
   KeyboardShortcutsModal,
   KeyboardShortcutsIndicator,
@@ -38,3 +41,4 @@ export { DemoModeBanner } from './DemoModeBanner';
 export { PluginManager } from './PluginManager';
 export { GenerationStats } from './GenerationStats';
 export * from './ui';
+export { FirstTimeSetup } from './FirstTimeSetup';

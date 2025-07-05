@@ -136,6 +136,7 @@ export interface UserPreferences {
     chunkOverlap: number;
     similarityThreshold: number;
   };
+  showUsername: boolean; // If true, show username in chat; if false, show "you"
 }
 
 // Additional types for API calls
@@ -155,12 +156,6 @@ export interface StreamingCallbacks {
   onMessage: (data: ChatMessage | { content: string; done?: boolean }) => void;
   onError?: (error: Error) => void;
   onComplete?: () => void;
-}
-
-export interface SystemInfo {
-  version?: string;
-  models?: OllamaModel[];
-  status?: string;
 }
 
 export interface ModelCreatePayload {
@@ -251,6 +246,48 @@ export interface DocumentChunk {
   endChar: number;
   filename?: string; // Added for context in search results
   embedding?: number[]; // Vector embedding for semantic search
+}
+
+// User and Authentication types
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: 'admin' | 'user';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserCreateRequest {
+  username: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'user';
+}
+
+export interface UserUpdateRequest {
+  username?: string;
+  email?: string;
+  password?: string;
+  role?: 'admin' | 'user';
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+  systemInfo: SystemInfo;
+}
+
+export interface SystemInfo {
+  requiresAuth: boolean;
+  singleUserMode: boolean;
+  hasUsers: boolean;
+  version?: string;
 }
 
 // Embedding system types
