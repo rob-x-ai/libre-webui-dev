@@ -1,6 +1,13 @@
 # Libre WebUI
 
 ![version](https://img.shields.io/github/package-json/v/libre-webui/libre-webui)
+![license](https://img.shields.io/github/license/libre-webui/libre-webui)
+![commits](https://img.shields.io/github/commit-activity/w/libre-webui/libre-webui)
+![last commit](https://img.shields.io/github/last-commit/libre-webui/libre-webui)
+![open prs](https://img.shields.io/github/issues-pr/libre-webui/libre-webui?label=open%20PRs)
+![closed prs](https://img.shields.io/github/issues-pr-closed/libre-webui/libre-webui?label=merged%20PRs&color=purple)
+![repo size](https://img.shields.io/github/repo-size/libre-webui/libre-webui)
+![top language](https://img.shields.io/github/languages/top/libre-webui/libre-webui)
 
 ![Libre WebUI Screenshot](./screenshot.png)
 
@@ -307,9 +314,9 @@ Connect to external AI services while maintaining local fallback:
 
 #### Supported Services
 
-- ✅ **OpenAI** - GPT-4, GPT-3.5 Turbo models
-- ✅ **Anthropic** - Claude 3 Opus, Sonnet, Haiku
-- ✅ **Groq** - High-speed Llama 3, Mixtral models
+- ✅ **OpenAI** - o3, o3-mini, o1-pro, GPT-4o, GPT-4.1, ChatGPT-4o-latest
+- ✅ **Anthropic** - Claude 4 Sonnet, Claude 3.7 Sonnet, Claude 3.5 Sonnet, Claude Opus 4
+- ✅ **Groq** - Llama 4 Maverick, Llama 3.3 70B, DeepSeek R1 Distill, Qwen QwQ 32B
 - ✅ **Custom APIs** - Any OpenAI-compatible endpoint
 
 #### Key Features
@@ -362,7 +369,7 @@ curl -X POST http://localhost:3001/api/plugins/activate/openai
 ## Architecture
 
 ```
-libre-webui-dev/
+libre-webui/
 ├── frontend/           # React + TypeScript + Tailwind CSS
 │   ├── src/
 │   │   ├── components/ # Reusable UI components
@@ -472,6 +479,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Copyright (C) 2025 Kroonen AI, Inc.
-
-<sub>LIBRE WEBUI is a trademark of Kroonen AI, Inc.</sub>
+Copyright (C) 2025 Libre WebUI (Kroonen AI, Inc.)

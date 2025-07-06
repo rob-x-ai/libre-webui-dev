@@ -5,6 +5,31 @@ All notable changes to Libre WebUI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### ✨ Added
+
+#### 🎨 Custom Background Images
+
+- **Background image upload** - Users can now upload custom background images
+- **Real-time preview** - Background images are displayed immediately after upload
+- **Configurable blur effect** - Adjustable blur amount (0-20px) for visual enhancement
+- **Opacity control** - Customizable transparency (0-100%) for better text readability
+- **Toggle functionality** - Enable/disable background images with a single click
+- **Background removal** - Option to remove current background and reset to default
+- **Semi-transparent UI** - Main content, header, and sidebar have semi-transparent backgrounds with blur effects
+- **Persistent settings** - Background preferences are saved and synced across sessions
+- **Error handling** - Comprehensive error handling for uploads and API calls
+- **Performance optimized** - Efficient image handling with proper scaling and optimization
+
+### 🔧 Technical Improvements
+
+- **Type safety** - Full TypeScript support for background settings
+- **State management** - Integrated background state into Zustand app store
+- **API integration** - Background settings persist via preferences API
+- **Component architecture** - Modular components for upload, rendering, and configuration
+- **UI integration** - Seamlessly integrated into existing Settings modal
+
 ## [0.1.0] - 2025-07-05
 
 ### 🎉 Initial Release
