@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { Button, Select, Textarea } from '@/components/ui';
 import { ModelTools } from '@/components/ModelTools';
+import { BackgroundUpload } from '@/components/BackgroundUpload';
 import { useChatStore } from '@/store/chatStore';
 import { useAppStore } from '@/store/appStore';
 import { usePluginStore } from '@/store/pluginStore';
@@ -634,6 +635,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Background Upload Section */}
+            <BackgroundUpload />
           </div>
         );
 

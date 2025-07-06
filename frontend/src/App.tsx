@@ -29,6 +29,7 @@ import {
 } from '@/components/KeyboardShortcuts';
 import { SettingsModal } from '@/components/SettingsModal';
 import { DemoModeBanner } from '@/components/DemoModeBanner';
+import { BackgroundRenderer } from '@/components/BackgroundRenderer';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 import { useInitializeApp } from '@/hooks/useInitializeApp';
@@ -187,7 +188,8 @@ const App: React.FC = () => {
         {/* Show full layout only if system doesn't require auth or user is authenticated */}
         {systemInfo && !systemInfo.requiresAuth ? (
           // No auth required - show full layout
-          <div className='flex h-screen bg-white dark:bg-dark-50 text-gray-900 dark:text-dark-800'>
+          <div className='flex h-screen bg-white/80 dark:bg-dark-50/80 text-gray-900 dark:text-dark-800 relative'>
+            <BackgroundRenderer />
             <Sidebar
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
@@ -195,7 +197,7 @@ const App: React.FC = () => {
             <SidebarToggle />
             <div
               className={cn(
-                'flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white dark:bg-dark-50',
+                'flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white/70 dark:bg-dark-50/70 relative z-10',
                 'w-full',
                 sidebarOpen ? 'lg:ml-80' : 'lg:ml-0'
               )}
@@ -204,7 +206,7 @@ const App: React.FC = () => {
               {isDemoMode && demoConfig.showBanner && (
                 <DemoModeBanner message={demoConfig.message} />
               )}
-              <main className='flex-1 overflow-hidden bg-white dark:bg-dark-50'>
+              <main className='flex-1 overflow-hidden bg-white/60 dark:bg-dark-50/60 backdrop-blur-sm'>
                 <ErrorBoundary>
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
@@ -227,7 +229,8 @@ const App: React.FC = () => {
               path='/*'
               element={
                 <ProtectedRoute>
-                  <div className='flex h-screen bg-white dark:bg-dark-50 text-gray-900 dark:text-dark-800'>
+                  <div className='flex h-screen bg-white/80 dark:bg-dark-50/80 text-gray-900 dark:text-dark-800 relative'>
+                    <BackgroundRenderer />
                     <Sidebar
                       isOpen={sidebarOpen}
                       onClose={() => setSidebarOpen(false)}
@@ -235,7 +238,7 @@ const App: React.FC = () => {
                     <SidebarToggle />
                     <div
                       className={cn(
-                        'flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white dark:bg-dark-50',
+                        'flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out bg-white/70 dark:bg-dark-50/70 relative z-10',
                         'w-full',
                         sidebarOpen ? 'lg:ml-80' : 'lg:ml-0'
                       )}
@@ -244,7 +247,7 @@ const App: React.FC = () => {
                       {isDemoMode && demoConfig.showBanner && (
                         <DemoModeBanner message={demoConfig.message} />
                       )}
-                      <main className='flex-1 overflow-hidden bg-white dark:bg-dark-50'>
+                      <main className='flex-1 overflow-hidden bg-white/60 dark:bg-dark-50/60 backdrop-blur-sm'>
                         <ErrorBoundary>
                           <Suspense fallback={<PageLoader />}>
                             <Routes>

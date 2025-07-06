@@ -73,6 +73,19 @@ export const Header: React.FC<HeaderProps> = ({
     );
   };
 
+  const handleLogoClick = () => {
+    const { sessions } = useChatStore.getState();
+
+    if (sessions.length > 0) {
+      // Sessions are sorted by updated_at DESC, so the first one is the latest
+      const latestSession = sessions[0];
+      navigate(`/c/${latestSession.id}`);
+    } else {
+      // No sessions exist, navigate to root to create a new one
+      navigate('/');
+    }
+  };
+
   const handleModelChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -135,58 +148,64 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Page title and session info */}
           <div className='flex items-center gap-3'>
-            <Logo size='sm' />
-            <div className='flex flex-col min-w-0'>
-              <h1 className='text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight truncate'>
-                {getPageTitle()}
-              </h1>
-              {isOnChatPage() && currentSession && models.length > 0 && (
-                <div className='flex items-center gap-2 mt-0.5'>
-                  <span className='text-xs text-gray-500 dark:text-dark-500 hidden sm:inline'>
-                    Model:
-                  </span>
-                  <Select
-                    value={currentSession.model}
-                    onChange={handleModelChange}
-                    options={models.map(model => ({
-                      value: model.name,
-                      label: model.isPlugin
-                        ? `${model.name} (${model.pluginName})`
-                        : model.name,
-                    }))}
-                    className='text-xs min-w-0 py-1 px-2 h-6 border-0 bg-gray-50 dark:bg-dark-200 rounded-lg max-w-32 sm:max-w-none'
-                  />
-                  {/* Plugin indicator - only show when current model is from a plugin */}
-                  {currentSession &&
-                    (() => {
-                      const currentModel = models.find(
-                        m => m.name === currentSession.model
-                      );
-                      const activePlugin = currentModel?.isPlugin
-                        ? plugins.find(
-                            p =>
-                              p.active &&
-                              p.model_map?.includes(currentSession.model)
-                          )
-                        : null;
-
-                      return (
-                        activePlugin &&
-                        currentModel?.isPlugin && (
-                          <div className='flex items-center gap-1'>
-                            <span className='text-xs text-gray-500 dark:text-dark-500 hidden sm:inline'>
-                              via
-                            </span>
-                            <span className='text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded'>
-                              {currentModel.pluginName || activePlugin.name}
-                            </span>
-                          </div>
+            <button
+              onClick={handleLogoClick}
+              className='flex items-center gap-3 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors'
+              title='Go to latest chat'
+            >
+              <Logo size='sm' />
+              <div className='flex flex-col min-w-0'>
+                <h1 className='text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-800 leading-tight truncate'>
+                  {getPageTitle()}
+                </h1>
+              </div>
+            </button>
+            {isOnChatPage() && currentSession && models.length > 0 && (
+              <div className='flex items-center gap-2 mt-0.5'>
+                <span className='text-xs text-gray-500 dark:text-dark-500 hidden sm:inline'>
+                  Model:
+                </span>
+                <Select
+                  value={currentSession.model}
+                  onChange={handleModelChange}
+                  options={models.map(model => ({
+                    value: model.name,
+                    label: model.isPlugin
+                      ? `${model.name} (${model.pluginName})`
+                      : model.name,
+                  }))}
+                  className='text-xs min-w-0 py-1 px-2 h-6 border-0 bg-gray-50 dark:bg-dark-200 rounded-lg max-w-32 sm:max-w-none'
+                />
+                {/* Plugin indicator - only show when current model is from a plugin */}
+                {currentSession &&
+                  (() => {
+                    const currentModel = models.find(
+                      m => m.name === currentSession.model
+                    );
+                    const activePlugin = currentModel?.isPlugin
+                      ? plugins.find(
+                          p =>
+                            p.active &&
+                            p.model_map?.includes(currentSession.model)
                         )
-                      );
-                    })()}
-                </div>
-              )}
-            </div>
+                      : null;
+
+                    return (
+                      activePlugin &&
+                      currentModel?.isPlugin && (
+                        <div className='flex items-center gap-1'>
+                          <span className='text-xs text-gray-500 dark:text-dark-500 hidden sm:inline'>
+                            via
+                          </span>
+                          <span className='text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded'>
+                            {currentModel.pluginName || activePlugin.name}
+                          </span>
+                        </div>
+                      )
+                    );
+                  })()}
+              </div>
+            )}
           </div>
         </div>
 

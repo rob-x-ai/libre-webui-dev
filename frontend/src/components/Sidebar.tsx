@@ -163,7 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar */}
       <div
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-80 bg-gray-50 dark:bg-dark-25 border-r border-gray-200 dark:border-dark-200 transform transition-all duration-300 ease-in-out shadow-xl',
+          'fixed inset-y-0 left-0 z-50 w-80 bg-gray-50/90 dark:bg-dark-25/90 backdrop-blur-sm border-r border-gray-200 dark:border-dark-200 transform transition-all duration-300 ease-in-out shadow-xl',
           // On mobile: slide in/out from left
           // On desktop: slide in/out from left but maintain layout flow
           isOpen ? 'translate-x-0' : '-translate-x-80', // Hide completely to the left (full width)

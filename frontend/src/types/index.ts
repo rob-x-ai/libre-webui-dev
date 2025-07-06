@@ -157,6 +157,12 @@ export interface UserPreferences {
     similarityThreshold: number;
   };
   showUsername: boolean; // If true, show username in chat; if false, show "you"
+  backgroundSettings?: {
+    enabled: boolean;
+    imageUrl: string;
+    blurAmount: number;
+    opacity: number;
+  };
 }
 
 // Additional types for API calls

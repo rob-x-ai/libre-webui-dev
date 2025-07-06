@@ -36,6 +36,12 @@ interface AppState {
   setPreferences: (preferences: Partial<UserPreferences>) => void;
   loadPreferences: () => Promise<void>;
 
+  // Background settings
+  backgroundImage: string | null;
+  setBackgroundImage: (imageUrl: string | null) => void;
+  uploadBackgroundImage: (file: File) => Promise<void>;
+  removeBackgroundImage: () => void;
+
   // UI state
   isGenerating: boolean;
   setIsGenerating: (generating: boolean) => void;
@@ -94,6 +100,12 @@ export const useAppStore = create<AppState>()(
           similarityThreshold: 0.3,
         },
         showUsername: false, // Default to showing "you" instead of username
+        backgroundSettings: {
+          enabled: false,
+          imageUrl: '',
+          blurAmount: 10,
+          opacity: 0.3,
+        },
       },
       setPreferences: newPreferences =>
         set(state => ({
@@ -132,6 +144,47 @@ export const useAppStore = create<AppState>()(
           demoConfig: getDemoConfig(),
         });
       },
+
+      // Background settings
+      backgroundImage: null,
+      setBackgroundImage: imageUrl => {
+        set({ backgroundImage: imageUrl });
+        // Update preferences
+        const state = get();
+        const updatedPreferences = {
+          ...state.preferences,
+          backgroundSettings: {
+            enabled: !!imageUrl,
+            imageUrl: imageUrl || '',
+            blurAmount: state.preferences.backgroundSettings?.blurAmount || 10,
+            opacity: state.preferences.backgroundSettings?.opacity || 0.3,
+          },
+        };
+        state.setPreferences(updatedPreferences);
+      },
+      uploadBackgroundImage: async (file: File) => {
+        try {
+          // Create a file reader to convert to base64
+          const reader = new FileReader();
+          return new Promise((resolve, reject) => {
+            reader.onload = e => {
+              const dataUrl = e.target?.result as string;
+              const state = get();
+              state.setBackgroundImage(dataUrl);
+              resolve();
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        } catch (error) {
+          console.error('Failed to upload background image:', error);
+          throw error;
+        }
+      },
+      removeBackgroundImage: () => {
+        const state = get();
+        state.setBackgroundImage(null);
+      },
     }),
     {
       name: 'libre-webui-app-state',
@@ -140,6 +193,7 @@ export const useAppStore = create<AppState>()(
         sidebarOpen: state.sidebarOpen,
         preferences: state.preferences,
         hasSeenSettingsNotification: state.hasSeenSettingsNotification,
+        backgroundImage: state.backgroundImage,
         // Note: We don't persist isDemoMode as it should be detected on each app load
       }),
     }

@@ -119,6 +119,12 @@ export interface UserPreferences {
   // Embedding settings for semantic search
   embeddingSettings: EmbeddingSettings;
   showUsername: boolean; // If true, show username in chat; if false, show "you"
+  backgroundSettings?: {
+    enabled: boolean;
+    imageUrl: string;
+    blurAmount: number;
+    opacity: number;
+  };
 }
 
 // Ollama Chat Message format
