@@ -152,9 +152,10 @@ export class AuthService {
   ): Promise<{ user: UserPublic; token: string } | null> {
     try {
       const userCount = userModel.getUserCount();
-      
+
       // Check if the only user is the default user
-      const isFirstRealUser = userCount === 0 || 
+      const isFirstRealUser =
+        userCount === 0 ||
         (userCount === 1 && userModel.getUserById('default') !== null);
 
       const userData = {

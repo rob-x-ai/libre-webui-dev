@@ -243,7 +243,9 @@ export class UserModel {
    * Get user count (excluding the default system user)
    */
   getUserCount(): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM users WHERE id != ?');
+    const stmt = this.db.prepare(
+      'SELECT COUNT(*) as count FROM users WHERE id != ?'
+    );
     const result = stmt.get('default') as { count: number };
     return result.count;
   }

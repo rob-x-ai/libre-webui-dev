@@ -73,7 +73,13 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         imgSrc: ["'self'", 'data:'],
-        connectSrc: ["'self'", 'http://localhost:3001', 'ws://localhost:3001', 'http://localhost:8080', 'ws://localhost:8080'],
+        connectSrc: [
+          "'self'",
+          'http://localhost:3001',
+          'ws://localhost:3001',
+          'http://localhost:8080',
+          'ws://localhost:8080',
+        ],
         fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         frameAncestors: ["'self'"],
@@ -130,14 +136,14 @@ app.use('/api/documents', documentRoutes);
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../../frontend/dist');
   app.use(express.static(frontendPath));
-  
+
   // Handle all non-API routes for SPA
   app.use((req: Request, res: Response, next: NextFunction) => {
     // Don't interfere with API routes
     if (req.path.startsWith('/api/')) {
       return next();
     }
-    
+
     // For all other routes that don't exist as static files, serve the SPA
     res.sendFile(path.join(frontendPath, 'index.html'));
   });
