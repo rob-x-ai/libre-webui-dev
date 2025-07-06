@@ -25,7 +25,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Read version from package.json
-let packageVersion = '0.1.0-rc';
+let packageVersion = '0.1.0';
 try {
   const packageJsonPath = join(__dirname, '..', '..', 'package.json');
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));

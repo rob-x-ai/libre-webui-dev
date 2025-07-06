@@ -9,28 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
-#### 🎨 Custom Background Images
-
-- **Background image upload** - Users can now upload custom background images
-- **Real-time preview** - Background images are displayed immediately after upload
-- **Configurable blur effect** - Adjustable blur amount (0-20px) for visual enhancement
-- **Opacity control** - Customizable transparency (0-100%) for better text readability
-- **Toggle functionality** - Enable/disable background images with a single click
-- **Background removal** - Option to remove current background and reset to default
-- **Semi-transparent UI** - Main content, header, and sidebar have semi-transparent backgrounds with blur effects
-- **Persistent settings** - Background preferences are saved and synced across sessions
-- **Error handling** - Comprehensive error handling for uploads and API calls
-- **Performance optimized** - Efficient image handling with proper scaling and optimization
-
 ### 🔧 Technical Improvements
 
-- **Type safety** - Full TypeScript support for background settings
-- **State management** - Integrated background state into Zustand app store
-- **API integration** - Background settings persist via preferences API
-- **Component architecture** - Modular components for upload, rendering, and configuration
-- **UI integration** - Seamlessly integrated into existing Settings modal
+### � Bug Fixes
 
-## [0.1.0] - 2025-07-05
+### 📚 Documentation
+
+## [0.1.0] - 2025-07-06
 
 ### 🎉 Initial Release
 
@@ -69,6 +54,19 @@ The first official release of Libre WebUI - a privacy-first, local-first AI chat
 - **External AI service integration** (OpenAI, Anthropic, Groq)
 - **Automatic model updates** from AI providers
 - **Flexible plugin system** for easy service addition
+
+#### 🎨 Custom Background Images
+
+- **Background image upload** - Users can now upload custom background images
+- **Real-time preview** - Background images are displayed immediately after upload
+- **Configurable blur effect** - Adjustable blur amount (0-20px) for visual enhancement
+- **Opacity control** - Customizable transparency (0-100%) for better text readability
+- **Toggle functionality** - Enable/disable background images with a single click
+- **Background removal** - Option to remove current background and reset to default
+- **Semi-transparent UI** - Main content, header, and sidebar have semi-transparent backgrounds with blur effects
+- **Persistent settings** - Background preferences are saved and synced across sessions
+- **Error handling** - Comprehensive error handling for uploads and API calls
+- **Performance optimized** - Efficient image handling with proper scaling and optimization
 
 #### 📄 Document Processing (RAG)
 
@@ -128,6 +126,14 @@ The first official release of Libre WebUI - a privacy-first, local-first AI chat
 - **React Router** for client-side navigation
 - **Zustand** for state management
 - **Axios** for API communication with interceptors
+
+#### Custom Background Images - Technical Implementation
+
+- **Type safety** - Full TypeScript support for background settings
+- **State management** - Integrated background state into Zustand app store
+- **API integration** - Background settings persist via preferences API
+- **Component architecture** - Modular components for upload, rendering, and configuration
+- **UI integration** - Seamlessly integrated into existing Settings modal
 
 ### 📚 Documentation
 
