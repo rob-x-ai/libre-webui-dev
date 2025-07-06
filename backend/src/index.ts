@@ -19,12 +19,14 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import {
   errorHandler,
@@ -51,6 +53,10 @@ import {
   GenerationStatistics,
 } from './types/index.js';
 
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = process.env.PORT || 3001;
 const corsOrigins = process.env.CORS_ORIGIN?.split(',') || [
@@ -67,7 +73,7 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         imgSrc: ["'self'", 'data:'],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", 'http://localhost:3001', 'ws://localhost:3001', 'http://localhost:8080', 'ws://localhost:8080'],
         fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         frameAncestors: ["'self'"],
@@ -105,6 +111,12 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Serve static files from frontend build in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendPath));
+}
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
@@ -113,6 +125,23 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/preferences', preferencesRoutes);
 app.use('/api/plugins', pluginRoutes);
 app.use('/api/documents', documentRoutes);
+
+// Catch-all handler for SPA routing (must be after API routes)
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendPath));
+  
+  // Handle all non-API routes for SPA
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    // Don't interfere with API routes
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    
+    // For all other routes that don't exist as static files, serve the SPA
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
 
 // Error handling
 app.use(notFoundHandler);

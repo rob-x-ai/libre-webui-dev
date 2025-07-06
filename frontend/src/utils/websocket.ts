@@ -28,7 +28,7 @@ class WebSocketService {
 
   constructor() {
     // Use the backend URL for WebSocket connection
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
     const wsUrl = apiUrl
       .replace('http://', 'ws://')
       .replace('https://', 'wss://');

@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  libre-webui:
+    image: ghcr.io/your-username/libre-webui:latest
+    # Uncomment the build section if you want to build locally instead
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    ports:
+      - '80:8080'
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - CORS_ORIGIN=https://lwui.org
+      - SINGLE_USER_MODE=false
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=7d
+    volumes:
+      - libre_webui_data:/app/backend/data
+      - libre_webui_temp:/app/backend/temp
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - libre-webui-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - '11434:11434'
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - libre-webui-network
+    # Uncomment the following lines if you have GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Optional: Add a reverse proxy for SSL termination
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - libre-webui
+    restart: unless-stopped
+    networks:
+      - libre-webui-network
+
+volumes:
+  libre_webui_data:
+  libre_webui_temp:
+  ollama_data:
+
+networks:
+  libre-webui-network:
+    driver: bridge

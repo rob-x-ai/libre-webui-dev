@@ -1,0 +1,37 @@
+name: Deploy to Production
+
+# This workflow requires the following secrets to be configured:
+# - DEPLOY_HOST: Your server IP or hostname
+# - DEPLOY_USER: SSH username for your server
+# - DEPLOY_SSH_KEY: Private SSH key for server access
+# - JWT_SECRET: Secure random string for JWT tokens
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm deployment'
+        required: true
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'deploy'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: JWT_SECRET
+          script: |
+            cd /opt/libre-webui
+            git pull origin main
+            export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+            ./scripts/deploy.sh
