@@ -61,37 +61,31 @@ const app = express();
 const port = process.env.PORT || 3001;
 const corsOrigins = process.env.CORS_ORIGIN?.split(',') || [
   'http://localhost:5173',
+  'http://localhost:3000',
+  'http://0.0.0.0:3000',
+  'http://0.0.0.0:8080',
+  'http://localhost:8080',
+  'http://192.168.2.159:8080',
 ];
+
+// Allow any origin in development/Docker mode
+const corsConfig =
+  process.env.NODE_ENV === 'production'
+    ? { origin: corsOrigins }
+    : { origin: true };
 
 // Security middleware
 app.use(
   helmet({
-    crossOriginEmbedderPolicy: true,
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        imgSrc: ["'self'", 'data:'],
-        connectSrc: [
-          "'self'",
-          'http://localhost:3001',
-          'ws://localhost:3001',
-          'http://localhost:8080',
-          'ws://localhost:8080',
-        ],
-        fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
-        objectSrc: ["'none'"],
-        frameAncestors: ["'self'"],
-      },
-    },
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: false, // Disable CSP temporarily for mobile debugging
   })
 );
 
 // CORS configuration
 app.use(
   cors({
-    origin: corsOrigins,
+    ...corsConfig,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -117,11 +111,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve static files from frontend build in production
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../../frontend/dist');
-  app.use(express.static(frontendPath));
-}
+// Static files are served by a separate frontend server on port 8080
+// Backend only serves API endpoints
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -132,22 +123,7 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/plugins', pluginRoutes);
 app.use('/api/documents', documentRoutes);
 
-// Catch-all handler for SPA routing (must be after API routes)
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../../frontend/dist');
-  app.use(express.static(frontendPath));
-
-  // Handle all non-API routes for SPA
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    // Don't interfere with API routes
-    if (req.path.startsWith('/api/')) {
-      return next();
-    }
-
-    // For all other routes that don't exist as static files, serve the SPA
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-}
+// API-only backend - no static file serving
 
 // Error handling
 app.use(notFoundHandler);
@@ -585,7 +561,7 @@ wss.on('connection', (ws, req) => {
 });
 
 // Start server
-server.listen(port, () => {
+server.listen({ port, host: '0.0.0.0' }, () => {
   console.log(`🚀 Libre WebUI Backend running on port ${port}`);
   console.log(`📡 WebSocket server running on ws://localhost:${port}/ws`);
   console.log(`🌐 CORS enabled for: ${corsOrigins.join(', ')}`);

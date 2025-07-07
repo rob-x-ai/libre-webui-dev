@@ -51,8 +51,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package*.json ./
 
 # Set production environment variables for frontend build
-ENV VITE_API_BASE_URL=/api
-ENV VITE_API_URL=
+# Use window.location.origin + port to connect to backend on same host
+ENV VITE_API_BASE_URL=""
+ENV VITE_API_URL=""
 
 RUN cd frontend && npm run build
 
@@ -86,12 +87,24 @@ COPY --from=prod-deps /app/package*.json ./
 COPY backend/plugins ./backend/plugins
 COPY backend/preferences.json ./backend/preferences.json
 
+# Install serve for frontend static file serving
+RUN npm install -g serve
+
 # Create directories for data persistence
 RUN mkdir -p ./backend/data && \
     mkdir -p ./backend/temp && \
     mkdir -p ./plugins && \
     mkdir -p ./uploads && \
     chown -R nodejs:nodejs /app
+
+# Create startup script that runs both services
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'echo "Starting frontend server on port 8080..."' >> /app/start.sh && \
+    echo 'serve -s ./frontend/dist -l tcp://0.0.0.0:8080 &' >> /app/start.sh && \
+    echo 'echo "Starting backend server on port 3001..."' >> /app/start.sh && \
+    echo 'node ./backend/dist/index.js' >> /app/start.sh && \
+    chmod +x /app/start.sh && \
+    chown nodejs:nodejs /app/start.sh
 
 # Switch to non-root user
 USER nodejs
@@ -116,5 +129,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the application
-CMD ["node", "./backend/dist/index.js"]
+# Start both services
+CMD ["/app/start.sh"]
