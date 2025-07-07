@@ -75,11 +75,13 @@ docker-compose -f docker-compose.external-ollama.yml up -d
 ### Docker Configurations
 
 **`docker-compose.yml` (Default)**
+
 - **Best for:** New users, testing, development
 - **Includes:** Complete setup with bundled Ollama
 - **Access:** http://localhost:8080
 
 **`docker-compose.external-ollama.yml`**
+
 - **Best for:** Power users with existing Ollama setup
 - **Requires:** Ollama running on host machine
 - **Access:** http://localhost:8080
@@ -427,22 +429,22 @@ libre-webui/
 
 **[📖 Complete Documentation →](./docs/00-README.md)**
 
-| Guide                                                          | Description                       |
-| -------------------------------------------------------------- | --------------------------------- |
-| **[🚀 Quick Start](./docs/01-QUICK_START.md)**                 | Get up and running in 5 minutes   |
-| **[🤖 Working with Models](./docs/02-WORKING_WITH_MODELS.md)** | Complete AI models guide          |
-| **[🎯 Pro Tips](./docs/03-PRO_TIPS.md)**                       | Advanced workflows and techniques |
-| **[⌨️ Keyboard Shortcuts](./docs/04-KEYBOARD_SHORTCUTS.md)**   | Productivity hotkeys              |
-| **[🎭 Demo Mode](./docs/05-DEMO_MODE.md)**                     | Try without installation          |
-| **[🔧 Troubleshooting](./docs/06-TROUBLESHOOTING.md)**         | Problem solving guide             |
-| **[🔌 Plugin Architecture](./docs/08-PLUGIN_ARCHITECTURE.md)** | Connect multiple AI services      |
-| **[� RAG Feature](./docs/09-RAG_FEATURE.md)**                 | Chat with your documents         |
-| **[🗄️ SQLite Migration](./docs/10-SQLITE_MIGRATION.md)**       | Upgrade from JSON to SQLite storage |
-| **[🤖 Model Updater](./docs/11-MODEL_UPDATER.md)**             | Auto-update AI provider models   |
-| **[�🔐 Authentication](./docs/12-AUTHENTICATION.md)**           | User management and security      |
-| **[🎨 Artifacts Feature](./docs/13-ARTIFACTS_FEATURE.md)**      | Interactive content and code execution |
-| **[⚙️ Artifacts Implementation](./docs/14-ARTIFACTS_IMPLEMENTATION.md)** | Technical implementation details |
-| **[🐳 Docker External Ollama](./docs/15-DOCKER_EXTERNAL_OLLAMA.md)** | Run Docker with external Ollama instance |
+| Guide                                                                    | Description                              |
+| ------------------------------------------------------------------------ | ---------------------------------------- |
+| **[🚀 Quick Start](./docs/01-QUICK_START.md)**                           | Get up and running in 5 minutes          |
+| **[🤖 Working with Models](./docs/02-WORKING_WITH_MODELS.md)**           | Complete AI models guide                 |
+| **[🎯 Pro Tips](./docs/03-PRO_TIPS.md)**                                 | Advanced workflows and techniques        |
+| **[⌨️ Keyboard Shortcuts](./docs/04-KEYBOARD_SHORTCUTS.md)**             | Productivity hotkeys                     |
+| **[🎭 Demo Mode](./docs/05-DEMO_MODE.md)**                               | Try without installation                 |
+| **[🔧 Troubleshooting](./docs/06-TROUBLESHOOTING.md)**                   | Problem solving guide                    |
+| **[🔌 Plugin Architecture](./docs/08-PLUGIN_ARCHITECTURE.md)**           | Connect multiple AI services             |
+| **[� RAG Feature](./docs/09-RAG_FEATURE.md)**                            | Chat with your documents                 |
+| **[🗄️ SQLite Migration](./docs/10-SQLITE_MIGRATION.md)**                 | Upgrade from JSON to SQLite storage      |
+| **[🤖 Model Updater](./docs/11-MODEL_UPDATER.md)**                       | Auto-update AI provider models           |
+| **[�🔐 Authentication](./docs/12-AUTHENTICATION.md)**                    | User management and security             |
+| **[🎨 Artifacts Feature](./docs/13-ARTIFACTS_FEATURE.md)**               | Interactive content and code execution   |
+| **[⚙️ Artifacts Implementation](./docs/14-ARTIFACTS_IMPLEMENTATION.md)** | Technical implementation details         |
+| **[🐳 Docker External Ollama](./docs/15-DOCKER_EXTERNAL_OLLAMA.md)**     | Run Docker with external Ollama instance |
 
 ## Accessibility & Performance
 
