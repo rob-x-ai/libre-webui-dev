@@ -83,9 +83,8 @@ COPY --from=backend-builder /app/backend/package*.json ./backend/
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=prod-deps /app/package*.json ./
 
-# Copy backend assets
-COPY backend/plugins ./backend/plugins
-COPY backend/preferences.json ./backend/preferences.json
+# Copy plugins directory
+COPY plugins ./plugins
 
 # Install serve for frontend static file serving
 RUN npm install -g serve
@@ -99,8 +98,8 @@ RUN mkdir -p ./backend/data && \
 
 # Create startup script that runs both services
 RUN echo '#!/bin/sh' > /app/start.sh && \
-    echo 'echo "Starting frontend server on port 8080..."' >> /app/start.sh && \
-    echo 'serve -s ./frontend/dist -l tcp://0.0.0.0:8080 &' >> /app/start.sh && \
+    echo 'echo "Starting frontend server on port $FRONTEND_PORT..."' >> /app/start.sh && \
+    echo 'serve -s ./frontend/dist -l tcp://0.0.0.0:$FRONTEND_PORT &' >> /app/start.sh && \
     echo 'echo "Starting backend server on port 3001..."' >> /app/start.sh && \
     echo 'node ./backend/dist/index.js' >> /app/start.sh && \
     chmod +x /app/start.sh && \
@@ -112,6 +111,7 @@ USER nodejs
 # Set production environment
 ENV NODE_ENV=production
 ENV PORT=3001
+ENV FRONTEND_PORT=5173
 
 # Set Ollama URL to connect to host machine when running in container
 ENV OLLAMA_BASE_URL=http://host.docker.internal:11434
@@ -119,8 +119,8 @@ ENV OLLAMA_BASE_URL=http://host.docker.internal:11434
 # JWT secret for authentication
 ENV JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
-# Expose ports - 3001 for backend, 8080 for frontend
-EXPOSE 3001 8080
+# Expose ports - 3001 for backend, 5173 for frontend
+EXPOSE 3001 5173
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
